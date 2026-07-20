@@ -1268,7 +1268,7 @@ function NotificationsPanel({ notifications }) {
 function Logo({ variant = "inline" }) {
   return (
     <div className={`brand-logo ${variant}`}>
-      <svg viewBox="0 0 178 58" role="img" aria-label="MoneyPlus">
+      <svg className="brand-mark" viewBox="0 0 62 58" role="img" aria-label="MoneyPlus">
         <defs>
           <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#ff6d32" />
@@ -1285,16 +1285,14 @@ function Logo({ variant = "inline" }) {
         />
         <path d="M44 17h13v8H44z" fill="#ffb800" rx="2" />
         <path d="M48.5 12.5v17" stroke="#ffb800" strokeWidth="5" strokeLinecap="round" />
-        <text x="66" y="27" fontSize="17" fontWeight="700" fill="#2b2b34">
-          Money
-        </text>
-        <text x="122" y="27" fontSize="17" fontWeight="700" fill="#ff572f">
-          Plus
-        </text>
-        <text x="66" y="44" fontSize="8" letterSpacing="4" fill="#8a8694">
-          ASSOCIATE
-        </text>
       </svg>
+      <div className="brand-wordmark">
+        <div className="brand-title" aria-hidden="true">
+          <span className="brand-money">Money</span>
+          <span className="brand-plus">Plus</span>
+        </div>
+        <div className="brand-subtitle">ASSOCIATE</div>
+      </div>
     </div>
   );
 }

@@ -128,16 +128,82 @@ a {
 
 .brand-logo {
   display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1;
 }
 
-.brand-logo.stacked svg {
-  width: 132px;
+.brand-mark {
+  width: 54px;
   height: auto;
 }
 
-.brand-logo.inline svg {
-  width: 166px;
-  height: auto;
+.brand-wordmark {
+  display: grid;
+  gap: 4px;
+}
+
+.brand-title {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+  font-size: 1.85rem;
+  font-weight: 800;
+  white-space: nowrap;
+  letter-spacing: -0.04em;
+}
+
+.brand-money {
+  color: #2b2b34;
+}
+
+.brand-plus {
+  color: #ff572f;
+}
+
+.brand-subtitle {
+  color: #8a8694;
+  font-size: 0.52rem;
+  letter-spacing: 0.42em;
+}
+
+.brand-logo.stacked {
+  flex-direction: column;
+  gap: 8px;
+}
+
+.brand-logo.stacked .brand-mark {
+  width: 76px;
+}
+
+.brand-logo.stacked .brand-wordmark {
+  justify-items: center;
+}
+
+.brand-logo.stacked .brand-title {
+  font-size: 1.2rem;
+}
+
+.brand-logo.stacked .brand-subtitle {
+  font-size: 0.48rem;
+  letter-spacing: 0.5em;
+}
+
+.brand-logo.inline {
+  gap: 8px;
+}
+
+.brand-logo.inline .brand-mark {
+  width: 42px;
+}
+
+.brand-logo.inline .brand-title {
+  font-size: 1.02rem;
+}
+
+.brand-logo.inline .brand-subtitle {
+  font-size: 0.44rem;
+  letter-spacing: 0.36em;
 }
 
 .brand-tagline {
@@ -576,6 +642,15 @@ a {
   background: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(255, 148, 113, 0.18);
   box-shadow: var(--shadow);
+}
+
+.topbar .brand-logo.inline .brand-title {
+  font-size: 0.98rem;
+}
+
+.topbar .brand-logo.inline .brand-subtitle {
+  font-size: 0.4rem;
+  letter-spacing: 0.3em;
 }
 
 .menu-button,
@@ -1222,7 +1297,8 @@ a {
 
   .topbar {
     border-radius: 0 0 22px 22px;
-    padding: 14px 16px;
+    padding: 14px 12px;
+    gap: 12px;
   }
 
   .welcome-block {
@@ -1245,7 +1321,7 @@ a {
   }
 
   .quick-action-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
 
@@ -1266,6 +1342,19 @@ a {
     justify-items: start;
     text-align: left;
   }
+
+  .topbar .brand-logo.inline .brand-mark {
+    width: 36px;
+  }
+
+  .topbar .brand-logo.inline .brand-title {
+    font-size: 0.9rem;
+  }
+
+  .topbar .brand-logo.inline .brand-subtitle {
+    font-size: 0.38rem;
+    letter-spacing: 0.24em;
+  }
 }
 
 @media (max-width: 620px) {
@@ -1280,7 +1369,8 @@ a {
   .auth-showcase {
     width: 100%;
     border-radius: 0 0 28px 28px;
-    padding: 24px 18px 12px;
+    min-height: auto;
+    padding: 22px 16px 10px;
     box-shadow: none;
   }
 
@@ -1288,29 +1378,76 @@ a {
     text-align: center;
   }
 
+  .auth-brand .brand-logo.stacked .brand-mark {
+    width: 64px;
+  }
+
+  .auth-brand .brand-logo.stacked .brand-title {
+    font-size: 1.05rem;
+  }
+
+  .auth-brand .brand-logo.stacked .brand-subtitle {
+    letter-spacing: 0.42em;
+  }
+
   .hero-copy {
     text-align: center;
-    margin-top: 18px;
+    margin-top: 16px;
   }
 
   .hero-copy h1 {
     max-width: none;
-    font-size: 2.35rem;
+    font-size: 2rem;
+    line-height: 1.08;
   }
 
   .hero-pills {
     justify-content: center;
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  .hero-pills span {
+    min-height: 34px;
+    padding: 0 12px;
+    font-size: 0.82rem;
   }
 
   .hero-visual {
-    margin-top: 20px;
-    max-width: 360px;
+    margin-top: 16px;
+    max-width: 290px;
   }
 
   .auth-card {
     margin: -8px 14px 0;
-    padding: 22px 18px 24px;
+    padding: 20px 16px 22px;
     border-radius: 24px;
+  }
+
+  .auth-card-header {
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .auth-card-header h2 {
+    font-size: 1.45rem;
+  }
+
+  .field-card {
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+
+  .field-card input {
+    grid-column: 2;
+    font-size: 1rem;
+  }
+
+  .digit-count {
+    grid-column: 1 / -1;
+    justify-self: end;
+    font-size: 0.8rem;
   }
 
   .form-actions {
@@ -1319,6 +1456,31 @@ a {
 
   .dashboard-shell {
     padding: 0;
+  }
+
+  .topbar {
+    border-radius: 0 0 18px 18px;
+  }
+
+  .topbar .brand-logo.inline {
+    gap: 6px;
+  }
+
+  .topbar .brand-logo.inline .brand-wordmark {
+    gap: 3px;
+  }
+
+  .topbar .brand-logo.inline .brand-mark {
+    width: 32px;
+  }
+
+  .topbar .brand-logo.inline .brand-title {
+    font-size: 0.82rem;
+  }
+
+  .topbar .brand-logo.inline .brand-subtitle {
+    font-size: 0.34rem;
+    letter-spacing: 0.2em;
   }
 
   .summary-grid,
@@ -1342,6 +1504,14 @@ a {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .quick-action {
+    gap: 8px;
+  }
+
+  .quick-action span:last-child {
+    font-size: 0.8rem;
+  }
+
   .security-banner {
     margin: 16px 8px 0;
   }
@@ -1359,6 +1529,6 @@ a {
   }
 
   .nav-item {
-    font-size: 0.74rem;
+    font-size: 0.68rem;
   }
 }
