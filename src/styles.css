@@ -40,11 +40,16 @@ body {
   color: var(--text);
 }
 
+/* keep form controls matching the app font and prevent mobile font autoscaling */
 button,
 input,
 textarea,
 select {
   font: inherit;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 button {
@@ -375,7 +380,7 @@ a {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: 74px;
+  min-width: 60px;
 }
 
 .flag {
@@ -413,6 +418,13 @@ a {
   min-width: 0;
   font-size: 1.08rem;
   background: transparent;
+}
+
+/* ensure telephone/number inputs use the app font on mobile */
+input[type="tel"],
+input[type="number"] {
+  font-family: inherit;
+  -webkit-appearance: none;
 }
 
 .digit-count {
