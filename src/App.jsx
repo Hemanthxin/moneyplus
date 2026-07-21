@@ -75,6 +75,33 @@ function fileToDataUrl(file) {
   });
 }
 
+// Phone camera photos (5-10MB+) blow past hosting request-size limits once
+// base64-encoded, which fails silently with no useful error. Downscale and
+// re-compress to JPEG client-side so the upload stays small and reliable.
+async function compressSelfieImage(file, maxDimension = 1280, quality = 0.82) {
+  const originalDataUrl = await fileToDataUrl(file);
+
+  const image = await new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("Unable to read the selected image"));
+    img.src = originalDataUrl;
+  });
+
+  const scale = Math.min(1, maxDimension / Math.max(image.width, image.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(image.width * scale);
+  canvas.height = Math.round(image.height * scale);
+
+  const context = canvas.getContext("2d");
+  if (!context) {
+    return originalDataUrl;
+  }
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+  return canvas.toDataURL("image/jpeg", quality);
+}
+
 function useSession() {
   const [session, setSession] = useState(() => {
     const raw = window.localStorage.getItem("moneyplus-session");
@@ -237,7 +264,7 @@ function LoginPage({ onAuthenticated }) {
     setError("");
 
     try {
-      const image = await fileToDataUrl(file);
+      const image = await compressSelfieImage(file);
       setOnboarding((current) => ({
         ...current,
         selfieImage: image,
