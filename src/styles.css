@@ -95,6 +95,7 @@ a {
   max-height: calc(100vh - clamp(24px, 6vh, 56px));
   overflow-x: hidden;
   overflow-y: auto;
+  scrollbar-width: none;
   border-radius: 40px;
   background:
     radial-gradient(circle at top left, rgba(255, 197, 172, 0.5), transparent 30%),
@@ -303,6 +304,12 @@ a {
   box-shadow: 0 32px 70px rgba(255, 116, 61, 0.12);
   max-height: calc(100vh - clamp(24px, 6vh, 56px));
   overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.auth-showcase::-webkit-scrollbar,
+.auth-card::-webkit-scrollbar {
+  display: none;
 }
 
 .auth-card-header {
