@@ -573,6 +573,24 @@ function DashboardPage({ session, onLogout }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [applications, setApplications] = useState([]);
   const [expertRequests, setExpertRequests] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (!sidebarOpen) return undefined;
+
+    function handleKeyDown(event) {
+      if (event.key === "Escape") {
+        setSidebarOpen(false);
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [sidebarOpen]);
 
   const applicationsKey = `moneyplus-applications-${session.mobile}`;
   const expertsKey = `moneyplus-expert-requests-${session.mobile}`;
@@ -619,6 +637,13 @@ function DashboardPage({ session, onLogout }) {
   const scoreSegments = useMemo(() => {
     if (!data) return 0;
     return Math.max(12, Math.min(100, Math.round((data.credit_score.score / 900) * 100)));
+  }, [data]);
+
+  const scoreInsight = useMemo(() => {
+    if (!data) return "";
+    return data.credit_score.score >= 750
+      ? "You're in a strong position for the best interest rates and quick approvals."
+      : "Timely repayments and lower credit utilization can improve your approval odds.";
   }, [data]);
 
   const activeNavPanel = navItems.some((item) => item.panel === activePanel) ? activePanel : "home";
@@ -757,7 +782,7 @@ function DashboardPage({ session, onLogout }) {
     <main className="dashboard-shell">
       <div className="dashboard-frame">
         <header className="topbar">
-          <button className="menu-button" type="button" aria-label="Menu" onClick={() => setActivePanel("more")}>
+          <button className="menu-button" type="button" aria-label="Open menu" onClick={() => setSidebarOpen(true)}>
             <span />
             <span />
             <span />
@@ -797,6 +822,7 @@ function DashboardPage({ session, onLogout }) {
               <div className="score-meta">
                 <p>Last updated</p>
                 <strong>{data.credit_score.last_updated}</strong>
+                <p className="score-insight">{scoreInsight}</p>
                 <button className="outline-button" type="button" onClick={() => setActivePanel("credit")}>
                   Check Details
                 </button>
@@ -908,20 +934,34 @@ function DashboardPage({ session, onLogout }) {
           <section className="workspace-card panel">{renderWorkspace()}</section>
         )}
 
-        <nav className="bottom-nav panel">
+      </div>
+
+      <div className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`} onClick={() => setSidebarOpen(false)} />
+
+      <aside className={`sidebar ${sidebarOpen ? "open" : ""}`} aria-hidden={!sidebarOpen}>
+        <div className="sidebar-header">
+          <Logo />
+          <button className="sidebar-close" type="button" aria-label="Close menu" onClick={() => setSidebarOpen(false)}>
+            {"✕"}
+          </button>
+        </div>
+        <nav className="sidebar-nav">
           {navItems.map((item, index) => (
             <button
-              className={`nav-item ${activeNavPanel === item.panel ? "active" : ""}`}
+              className={`sidebar-nav-item ${activeNavPanel === item.panel ? "active" : ""}`}
               type="button"
               key={item.title}
-              onClick={() => setActivePanel(item.panel)}
+              onClick={() => {
+                setActivePanel(item.panel);
+                setSidebarOpen(false);
+              }}
             >
               <span className={`nav-glyph glyph-${index + 1}`} />
               {item.title}
             </button>
           ))}
         </nav>
-      </div>
+      </aside>
     </main>
   );
 }
