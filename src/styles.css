@@ -30,7 +30,7 @@ body,
 
 body {
   margin: 0;
-  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   line-height: 1.5;
   overflow-x: hidden;
   background:
@@ -1636,8 +1636,6 @@ input[type="number"] {
   }
 
   .bottom-nav {
-    position: sticky;
-    bottom: 8px;
     margin: 16px 8px 8px;
     padding: 14px 10px;
   }

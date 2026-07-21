@@ -1,4 +1,8 @@
-const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://127.0.0.1:8000" : "https://moneyplusbackend.vercel.app");
+// Strip any trailing slash: a double slash before the path (e.g. from
+// VITE_API_URL="https://host/") makes Vercel 308-redirect the request, and
+// browsers refuse to follow a redirected CORS preflight - every POST then
+// fails as a network error even though the server is reachable.
+const API_BASE = (import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://127.0.0.1:8000" : "https://moneyplusbackend.vercel.app")).replace(/\/+$/, "");
 const REQUEST_TIMEOUT_MS = 20000;
 
 async function request(path, options = {}) {
