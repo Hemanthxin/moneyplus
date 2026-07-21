@@ -420,35 +420,37 @@ function LoginPage({ onAuthenticated }) {
             </label>
           </div>
 
-          <label className="text-field">
-            <span>Permanent Address</span>
-            <textarea
-              rows="3"
-              value={onboarding.permanentAddress}
-              onChange={(event) => updateOnboarding("permanentAddress", event.target.value)}
-              placeholder="Enter your permanent address"
-            />
-          </label>
-
           <label className="checkbox-field">
             <input
               type="checkbox"
               checked={onboarding.sameAsPermanent}
               onChange={(event) => updateOnboarding("sameAsPermanent", event.target.checked)}
             />
-            <span>My current address is the same as my permanent address</span>
+            <span>Current address is the same as permanent</span>
           </label>
 
-          <label className="text-field">
-            <span>Current Address</span>
-            <textarea
-              rows="3"
-              value={onboarding.sameAsPermanent ? onboarding.permanentAddress : onboarding.currentAddress}
-              onChange={(event) => updateOnboarding("currentAddress", event.target.value)}
-              placeholder="Enter your current address"
-              disabled={onboarding.sameAsPermanent}
-            />
-          </label>
+          <div className="form-grid">
+            <label className="text-field">
+              <span>Permanent Address</span>
+              <textarea
+                rows="2"
+                value={onboarding.permanentAddress}
+                onChange={(event) => updateOnboarding("permanentAddress", event.target.value)}
+                placeholder="Enter your permanent address"
+              />
+            </label>
+
+            <label className="text-field">
+              <span>Current Address</span>
+              <textarea
+                rows="2"
+                value={onboarding.sameAsPermanent ? onboarding.permanentAddress : onboarding.currentAddress}
+                onChange={(event) => updateOnboarding("currentAddress", event.target.value)}
+                placeholder="Enter your current address"
+                disabled={onboarding.sameAsPermanent}
+              />
+            </label>
+          </div>
 
           <label className="text-field">
             <span>Reference Number (Optional)</span>
@@ -516,24 +518,26 @@ function LoginPage({ onAuthenticated }) {
       <div className="auth-gradient" />
       <section className="auth-stage">
         <div className="auth-showcase">
-          <div className="brand-block auth-brand">
-            <Logo variant="stacked" />
-            <p className="brand-tagline">Smart Finance, Simplified</p>
-          </div>
+          <div className="auth-showcase-content">
+            <div className="brand-block auth-brand">
+              <Logo variant="stacked" />
+              <p className="brand-tagline">Smart Finance, Simplified</p>
+            </div>
 
-          <div className="hero-copy">
-            <h1>India&apos;s Smart Financial Partner</h1>
-            <p>Personal Loan &amp; Home Loan</p>
-          </div>
+            <div className="hero-copy">
+              <h1>India&apos;s Smart Financial Partner</h1>
+              <p>Personal Loan &amp; Home Loan</p>
+            </div>
 
-          <div className="hero-pills" aria-hidden="true">
-            <span>Personal Loan</span>
-            <span>Business Loan</span>
-            <span>Home Loan</span>
-          </div>
+            <div className="hero-pills" aria-hidden="true">
+              <span>Personal Loan</span>
+              <span>Business Loan</span>
+              <span>Home Loan</span>
+            </div>
 
-          <div className="hero-visual">
-            <img className="hero-image" src={homeHeroImage} alt="Home loan illustration with house, money bag, coins, and credit score meter" />
+            <div className="hero-visual">
+              <img className="hero-image" src={homeHeroImage} alt="Home loan illustration with house, money bag, coins, and credit score meter" />
+            </div>
           </div>
         </div>
 
