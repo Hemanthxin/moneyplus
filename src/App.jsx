@@ -236,7 +236,7 @@ function LoginPage({ onAuthenticated }) {
 
           <p className="auth-helper">
             {step === "mobile"
-              ? "Enter your mobile number. New users will complete one-time onboarding after OTP verification."
+              ? "Enter your mobile number."
               : `We sent a 6-digit code to +91 ${formattedDigits || "XXXXXXXXXX"}.`}
           </p>
 
