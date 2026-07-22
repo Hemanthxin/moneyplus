@@ -358,9 +358,19 @@ function DashboardPage({ session, onLogout }) {
   const [applications, setApplications] = useState([]);
   const [expertRequests, setExpertRequests] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(min-width: 981px)").matches
+  );
 
   useEffect(() => {
-    if (!sidebarOpen) return undefined;
+    const query = window.matchMedia("(min-width: 981px)");
+    const handleChange = (event) => setIsDesktop(event.matches);
+    query.addEventListener("change", handleChange);
+    return () => query.removeEventListener("change", handleChange);
+  }, []);
+
+  useEffect(() => {
+    if (!sidebarOpen || isDesktop) return undefined;
 
     function handleKeyDown(event) {
       if (event.key === "Escape") {
@@ -374,7 +384,7 @@ function DashboardPage({ session, onLogout }) {
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
     };
-  }, [sidebarOpen]);
+  }, [sidebarOpen, isDesktop]);
 
   const applicationsKey = `moneyplus-applications-${session.mobile}`;
   const expertsKey = `moneyplus-expert-requests-${session.mobile}`;
@@ -568,11 +578,13 @@ function DashboardPage({ session, onLogout }) {
     <main className="dashboard-shell">
       <div className="dashboard-frame">
         <header className="topbar">
-          <button className="menu-button" type="button" aria-label="Open menu" onClick={() => setSidebarOpen(true)}>
-            <span />
-            <span />
-            <span />
-          </button>
+          {isDesktop ? null : (
+            <button className="menu-button" type="button" aria-label="Open menu" onClick={() => setSidebarOpen(true)}>
+              <span />
+              <span />
+              <span />
+            </button>
+          )}
           <Logo />
           <div className="topbar-actions">
             <button className="bell-button" type="button" aria-label="Notifications" onClick={() => setActivePanel("notifications")}>
@@ -721,14 +733,18 @@ function DashboardPage({ session, onLogout }) {
         ))}
       </nav>
 
-      <div className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`} onClick={() => setSidebarOpen(false)} />
+      {isDesktop ? null : (
+        <div className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`} onClick={() => setSidebarOpen(false)} />
+      )}
 
-      <aside className={`sidebar ${sidebarOpen ? "open" : ""}`} aria-hidden={!sidebarOpen}>
+      <aside className={`sidebar ${sidebarOpen || isDesktop ? "open" : ""}`} aria-hidden={!(sidebarOpen || isDesktop)}>
         <div className="sidebar-header">
           <Logo />
-          <button className="sidebar-close" type="button" aria-label="Close menu" onClick={() => setSidebarOpen(false)}>
-            {"✕"}
-          </button>
+          {isDesktop ? null : (
+            <button className="sidebar-close" type="button" aria-label="Close menu" onClick={() => setSidebarOpen(false)}>
+              {"✕"}
+            </button>
+          )}
         </div>
         <nav className="sidebar-nav">
           {navItems.map((item, index) => (
@@ -1052,6 +1068,20 @@ function ExpertPanel({ onSave }) {
 const AMOUNT_SLIDER_MIN = 25_000;
 const AMOUNT_SLIDER_MAX = 10_000_000;
 
+function LenderLogo({ name, logoUrl }) {
+  const [failed, setFailed] = useState(false);
+
+  if (!logoUrl || failed) {
+    return <span className="lender-badge">{name.charAt(0)}</span>;
+  }
+
+  return (
+    <span className="lender-badge lender-badge-logo">
+      <img src={logoUrl} alt={`${name} logo`} onError={() => setFailed(true)} loading="lazy" />
+    </span>
+  );
+}
+
 function OfferComparePanel({ product, onApply }) {
   const [amount, setAmount] = useState(500_000);
   const [monthlyIncome, setMonthlyIncome] = useState("50000");
@@ -1166,7 +1196,7 @@ function OfferComparePanel({ product, onApply }) {
               {visibleOffers.map((offer) => (
                 <article className="lender-card" key={offer.rank}>
                   <div className="lender-card-top">
-                    <span className="lender-badge">{offer.name.charAt(0)}</span>
+                    <LenderLogo name={offer.name} logoUrl={offer.logo_url} />
                     <div className="lender-name-block">
                       <strong>{offer.name}</strong>
                       <span className="lender-roi">{offer.roi_label}</span>
