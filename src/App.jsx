@@ -1,21 +1,21 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import { getDashboard, registerUser, sendOtp, verifyOtp } from "./api/client";
+import { getDashboard, getOffers, registerUser, sendOtp, verifyOtp } from "./api/client";
 import homeHeroImage from "./assets/home-hero.jpg";
 
 const navItems = [
   { title: "Home", panel: "home" },
-  { title: "My Applications", panel: "applications" },
   { title: "Offers", panel: "offers" },
-  { title: "My Profile", panel: "profile" },
-  { title: "More", panel: "more" },
+  { title: "Calculators", panel: "calculators" },
+  { title: "Applications", panel: "applications" },
+  { title: "Profile", panel: "profile" },
 ];
 
-const quickActions = [
-  { title: "Eligibility Check", icon: "calculator", panel: "eligibility" },
-  { title: "EMI Calculator", icon: "document", panel: "emi" },
-  { title: "Credit Score Check", icon: "gauge", panel: "credit" },
-  { title: "Talk to Expert", icon: "headset", panel: "expert" },
+const whyChooseUs = [
+  { title: "Best Interest Rates", icon: "percent" },
+  { title: "Quick Approval", icon: "bolt" },
+  { title: "Minimal Documents", icon: "document" },
+  { title: "Flexible Repayment", icon: "calendar" },
 ];
 
 const productArtMap = {
@@ -450,7 +450,7 @@ function DashboardPage({ session, onLogout }) {
 
   function openProductPanel(product) {
     setSelectedProduct(product);
-    setActivePanel("product");
+    setActivePanel("compare");
   }
 
   function saveApplication(form) {
@@ -503,37 +503,39 @@ function DashboardPage({ session, onLogout }) {
       case "profile":
         return (
           <WorkspacePanel title="My Profile" subtitle="View your account and contact details.">
-            <ProfilePanel user={data.user} />
+            <ProfilePanel
+              user={data.user}
+              notifications={notifications}
+              onLogout={onLogout}
+              onOpenPanel={setActivePanel}
+            />
           </WorkspacePanel>
         );
-      case "more":
+      case "calculators":
         return (
-          <WorkspacePanel title="More Options" subtitle="Support, alerts, and account actions in one place.">
-            <MorePanel notifications={notifications} expertRequests={expertRequests} onLogout={onLogout} onOpenPanel={setActivePanel} />
-          </WorkspacePanel>
-        );
-      case "eligibility":
-        return (
-          <WorkspacePanel title="Eligibility Check" subtitle="Estimate how much you may qualify for before applying.">
-            <EligibilityPanel />
-          </WorkspacePanel>
-        );
-      case "emi":
-        return (
-          <WorkspacePanel title="EMI Calculator" subtitle="Plan your monthly outflow before you submit a loan application.">
-            <EmiPanel />
+          <WorkspacePanel title="Calculators" subtitle="Plan your loan before you apply.">
+            <CalculatorsPanel onTalkToExpert={() => setActivePanel("expert")} />
           </WorkspacePanel>
         );
       case "credit":
         return (
           <WorkspacePanel title="Credit Score Details" subtitle="Review your score range, lending impact, and practical next steps.">
-            <CreditPanel creditScore={data.credit_score} />
+            <CreditPanel creditScore={data.credit_score} scoreSegments={scoreSegments} scoreInsight={scoreInsight} />
           </WorkspacePanel>
         );
       case "expert":
         return (
           <WorkspacePanel title="Talk to an Expert" subtitle="Request a callback from a financial specialist.">
             <ExpertPanel onSave={saveExpertRequest} />
+          </WorkspacePanel>
+        );
+      case "compare":
+        return (
+          <WorkspacePanel
+            title={selectedProduct ? selectedProduct.title : "Compare Offers"}
+            subtitle="Compare & choose the best offer for your requirements."
+          >
+            <OfferComparePanel product={selectedProduct} onApply={() => setActivePanel("product")} />
           </WorkspacePanel>
         );
       case "product":
@@ -577,9 +579,6 @@ function DashboardPage({ session, onLogout }) {
               <BellIcon />
               <strong>3</strong>
             </button>
-            <button className="avatar-button" type="button" onClick={() => setActivePanel("profile")} aria-label="Profile">
-              <AvatarIcon />
-            </button>
           </div>
         </header>
 
@@ -587,72 +586,64 @@ function DashboardPage({ session, onLogout }) {
           <h1>
             Hello, {data.user.first_name}! <span>{"\u{1F44B}"}</span>
           </h1>
-          <p>Welcome to your Financial Partner</p>
-        </section>
-
-        <section className="summary-grid">
-          <article className="score-card panel">
-            <div className="card-title-row">
-              <h2>Your Credit Score</h2>
-              <span className="info-dot">i</span>
-            </div>
-            <div className="score-layout">
-              <div className="score-ring" style={{ "--progress": `${scoreSegments}%` }}>
-                <div className="score-ring-inner">
-                  <strong>{data.credit_score.score}</strong>
-                  <span>{data.credit_score.label}</span>
-                </div>
-              </div>
-              <div className="score-meta">
-                <p>Last updated</p>
-                <strong>{data.credit_score.last_updated}</strong>
-                <p className="score-insight">{scoreInsight}</p>
-                <button className="outline-button" type="button" onClick={() => setActivePanel("credit")}>
-                  Check Details
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <article className="actions-card panel">
-            <h2>Quick Actions</h2>
-            <div className="quick-action-grid">
-              {quickActions.map((item) => (
-                <button className="quick-action" key={item.title} type="button" onClick={() => setActivePanel(item.panel)}>
-                  <span className={`quick-icon ${item.icon}`}>
-                    <MiniIcon kind={item.icon} />
-                  </span>
-                  <span>{item.title}</span>
-                </button>
-              ))}
-            </div>
-          </article>
+          <p>Find the best financial solutions for you</p>
         </section>
 
         {activePanel === "home" ? (
           <>
-            <section className="products-grid">
-              {data.products.map((product) => (
-                <article className="product-card panel" key={product.rank}>
-                  <div className="product-copy">
-                    <h3>
-                      {product.rank}. {product.title}
-                    </h3>
-                    <p>{product.subtitle}</p>
-                  </div>
-                  <div className={`product-art ${productArtMap[product.title] || "moneybag"}`}>
-                    <Illustration kind={productArtMap[product.title] || "moneybag"} />
-                  </div>
-                  <ul className="product-features">
-                    {product.features.map((feature) => (
-                      <li key={feature}>{feature}</li>
-                    ))}
-                  </ul>
-                  <button className="round-arrow" type="button" aria-label={`Open ${product.title}`} onClick={() => openProductPanel(product)}>
-                    {"\u2192"}
+            <section className="promo-banner panel" role="button" tabIndex={0} onClick={() => setActivePanel("offers")} onKeyDown={(event) => event.key === "Enter" && setActivePanel("offers")}>
+              <div className="promo-copy">
+                <strong>Compare. Choose. Save.</strong>
+                <p>Get the best loan offers from top banks &amp; NBFCs</p>
+              </div>
+              <div className="promo-art">
+                <Illustration kind="moneybag" />
+              </div>
+            </section>
+
+            <section className="services-section">
+              <div className="section-heading">
+                <h2>Our Services</h2>
+              </div>
+              <div className="services-grid">
+                {data.products.map((product) => (
+                  <button className="service-tile" type="button" key={product.rank} onClick={() => openProductPanel(product)}>
+                    <span className={`service-icon ${productArtMap[product.title] || "moneybag"}`}>
+                      <Illustration kind={productArtMap[product.title] || "moneybag"} />
+                    </span>
+                    <span>{product.title}</span>
                   </button>
-                </article>
-              ))}
+                ))}
+              </div>
+            </section>
+
+            <section className="credit-cta panel">
+              <div className="credit-cta-icon">
+                <MiniIcon kind="gauge" />
+              </div>
+              <div className="credit-cta-copy">
+                <strong>Check Your Credit Score</strong>
+                <p>Get your credit score in just 2 minutes</p>
+              </div>
+              <button className="primary-button compact" type="button" onClick={() => setActivePanel("credit")}>
+                Check Now
+              </button>
+            </section>
+
+            <section className="why-choose-section">
+              <div className="section-heading">
+                <h2>Why Choose MoneyPlus?</h2>
+              </div>
+              <div className="why-choose-grid">
+                {whyChooseUs.map((item) => (
+                  <div className="why-choose-item" key={item.title}>
+                    <span className="why-choose-icon">
+                      <MiniIcon kind={item.icon} />
+                    </span>
+                    <span>{item.title}</span>
+                  </div>
+                ))}
+              </div>
             </section>
 
             <section className="activity-grid">
@@ -676,7 +667,7 @@ function DashboardPage({ session, onLogout }) {
                     ))}
                   </div>
                 ) : (
-                  <p className="empty-copy">No applications yet. Open any product card to begin.</p>
+                  <p className="empty-copy">No applications yet. Open any service to begin.</p>
                 )}
               </article>
 
@@ -685,13 +676,9 @@ function DashboardPage({ session, onLogout }) {
                   <h2>Smart Shortcuts</h2>
                 </div>
                 <div className="shortcut-grid">
-                  <button className="shortcut-card" type="button" onClick={() => setActivePanel("eligibility")}>
-                    <strong>Check Eligibility</strong>
-                    <span>Estimate your eligible loan size</span>
-                  </button>
-                  <button className="shortcut-card" type="button" onClick={() => setActivePanel("emi")}>
-                    <strong>Calculate EMI</strong>
-                    <span>Understand monthly repayment instantly</span>
+                  <button className="shortcut-card" type="button" onClick={() => setActivePanel("calculators")}>
+                    <strong>Calculators</strong>
+                    <span>Check eligibility and estimate EMI</span>
                   </button>
                   <button className="shortcut-card" type="button" onClick={() => setActivePanel("expert")}>
                     <strong>Book Expert Call</strong>
@@ -719,6 +706,20 @@ function DashboardPage({ session, onLogout }) {
         )}
 
       </div>
+
+      <nav className="bottom-tab-bar">
+        {navItems.map((item, index) => (
+          <button
+            className={`bottom-tab-item ${activeNavPanel === item.panel ? "active" : ""}`}
+            type="button"
+            key={item.title}
+            onClick={() => setActivePanel(item.panel)}
+          >
+            <span className={`nav-glyph glyph-${index + 1}`} />
+            {item.title}
+          </button>
+        ))}
+      </nav>
 
       <div className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`} onClick={() => setSidebarOpen(false)} />
 
@@ -814,7 +815,7 @@ function OffersPanel({ products, onOpenProduct }) {
   );
 }
 
-function ProfilePanel({ user }) {
+function ProfilePanel({ user, notifications, onLogout, onOpenPanel }) {
   const profileRows = [
     ["Full Name", `${user.first_name}${user.last_name ? ` ${user.last_name}` : ""}`],
     ["Mobile Number", user.mobile],
@@ -823,36 +824,56 @@ function ProfilePanel({ user }) {
   ];
 
   return (
-    <div className="profile-grid">
-      {profileRows.map(([label, value]) => (
-        <div className="profile-item" key={label}>
-          <span>{label}</span>
-          <strong>{value}</strong>
-        </div>
-      ))}
+    <div className="profile-shell">
+      <div className="profile-grid">
+        {profileRows.map(([label, value]) => (
+          <div className="profile-item" key={label}>
+            <span>{label}</span>
+            <strong>{value}</strong>
+          </div>
+        ))}
+      </div>
+
+      <div className="more-grid">
+        <button className="more-card" type="button" onClick={() => onOpenPanel("notifications")}>
+          <strong>Notifications</strong>
+          <span>{notifications.length} recent updates</span>
+        </button>
+        <button className="more-card" type="button" onClick={() => onOpenPanel("security")}>
+          <strong>Security Center</strong>
+          <span>Review privacy and platform safeguards</span>
+        </button>
+        <button className="more-card logout" type="button" onClick={onLogout}>
+          <strong>Logout</strong>
+          <span>Sign out of the dashboard</span>
+        </button>
+      </div>
     </div>
   );
 }
 
-function MorePanel({ notifications, expertRequests, onLogout, onOpenPanel }) {
+function CalculatorsPanel({ onTalkToExpert }) {
   return (
-    <div className="more-grid">
-      <button className="more-card" type="button" onClick={() => onOpenPanel("notifications")}>
-        <strong>Notifications</strong>
-        <span>{notifications.length} recent updates</span>
-      </button>
-      <button className="more-card" type="button" onClick={() => onOpenPanel("security")}>
-        <strong>Security Center</strong>
-        <span>Review privacy and platform safeguards</span>
-      </button>
-      <div className="more-card static">
-        <strong>Expert Requests</strong>
-        <span>{expertRequests.length ? `${expertRequests.length} callback request(s) saved` : "No callback request saved yet"}</span>
+    <div className="calculators-shell">
+      <div className="calculator-block">
+        <h3>Eligibility Check</h3>
+        <p className="calculator-intro">Estimate how much you may qualify for before applying.</p>
+        <EligibilityPanel />
       </div>
-      <button className="more-card logout" type="button" onClick={onLogout}>
-        <strong>Logout</strong>
-        <span>Sign out of the dashboard</span>
-      </button>
+      <div className="calculator-block">
+        <h3>EMI Calculator</h3>
+        <p className="calculator-intro">Plan your monthly outflow before you submit a loan application.</p>
+        <EmiPanel />
+      </div>
+      <div className="calculator-cta">
+        <div>
+          <strong>Need help deciding?</strong>
+          <p>Talk to one of our loan specialists for personalised guidance.</p>
+        </div>
+        <button className="outline-button" type="button" onClick={onTalkToExpert}>
+          Talk to Expert
+        </button>
+      </div>
     </div>
   );
 }
@@ -946,24 +967,40 @@ function EmiPanel() {
   );
 }
 
-function CreditPanel({ creditScore }) {
+function CreditPanel({ creditScore, scoreSegments, scoreInsight }) {
   const isStrong = creditScore.score >= 750;
   return (
-    <div className="insight-grid">
-      <div className="insight-card">
-        <span>Current Score</span>
-        <strong>{creditScore.score}</strong>
-        <p>{creditScore.label} profile. Last refreshed on {creditScore.last_updated}.</p>
+    <div className="credit-detail">
+      <div className="score-layout">
+        <div className="score-ring" style={{ "--progress": `${scoreSegments}%` }}>
+          <div className="score-ring-inner">
+            <strong>{creditScore.score}</strong>
+            <span>{creditScore.label}</span>
+          </div>
+        </div>
+        <div className="score-meta">
+          <p>Last updated</p>
+          <strong>{creditScore.last_updated}</strong>
+          <p className="score-insight">{scoreInsight}</p>
+        </div>
       </div>
-      <div className="insight-card">
-        <span>Lender Impact</span>
-        <strong>{isStrong ? "Better pricing likely" : "Improve score for stronger approval odds"}</strong>
-        <p>{isStrong ? "You may qualify for more competitive interest offers." : "Timely repayments and lower utilization can improve approval quality."}</p>
-      </div>
-      <div className="insight-card">
-        <span>Recommended Next Step</span>
-        <strong>{isStrong ? "Proceed with application" : "Check eligibility first"}</strong>
-        <p>{isStrong ? "Use the product cards to submit an application." : "Run an eligibility and EMI check before applying."}</p>
+
+      <div className="insight-grid">
+        <div className="insight-card">
+          <span>Current Score</span>
+          <strong>{creditScore.score}</strong>
+          <p>{creditScore.label} profile. Last refreshed on {creditScore.last_updated}.</p>
+        </div>
+        <div className="insight-card">
+          <span>Lender Impact</span>
+          <strong>{isStrong ? "Better pricing likely" : "Improve score for stronger approval odds"}</strong>
+          <p>{isStrong ? "You may qualify for more competitive interest offers." : "Timely repayments and lower utilization can improve approval quality."}</p>
+        </div>
+        <div className="insight-card">
+          <span>Recommended Next Step</span>
+          <strong>{isStrong ? "Proceed with application" : "Check eligibility first"}</strong>
+          <p>{isStrong ? "Use the services grid to submit an application." : "Run an eligibility and EMI check before applying."}</p>
+        </div>
       </div>
     </div>
   );
@@ -1009,6 +1046,166 @@ function ExpertPanel({ onSave }) {
       </div>
       {submitted ? <p className="info-text">Callback request saved. An expert will reach out based on your preferred slot.</p> : null}
     </form>
+  );
+}
+
+const AMOUNT_SLIDER_MIN = 25_000;
+const AMOUNT_SLIDER_MAX = 10_000_000;
+
+function OfferComparePanel({ product, onApply }) {
+  const [amount, setAmount] = useState(500_000);
+  const [monthlyIncome, setMonthlyIncome] = useState("50000");
+  const [employmentType, setEmploymentType] = useState("Salaried");
+  const [editingRequirements, setEditingRequirements] = useState(false);
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [showAll, setShowAll] = useState(false);
+
+  const incomeValue = Number(monthlyIncome || 0);
+
+  useEffect(() => {
+    if (!product) return undefined;
+    let ignore = false;
+    setLoading(true);
+    setError("");
+
+    getOffers({ product: product.title, amount, monthlyIncome: incomeValue })
+      .then((response) => {
+        if (!ignore) setResult(response);
+      })
+      .catch((err) => {
+        if (!ignore) setError(err.message);
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product, amount, incomeValue]);
+
+  if (!product) {
+    return <p className="empty-copy">Select a service from the home dashboard to compare offers.</p>;
+  }
+
+  const offers = result?.offers || [];
+  const visibleOffers = showAll ? offers : offers.slice(0, 5);
+
+  return (
+    <div className="compare-shell">
+      <div className="requirements-card">
+        <div className="requirements-header">
+          <strong>Your Requirements</strong>
+          <button className="text-button" type="button" onClick={() => setEditingRequirements((current) => !current)}>
+            {editingRequirements ? "Done" : "Edit"}
+          </button>
+        </div>
+
+        <div className="requirements-grid">
+          <div className="requirement-item">
+            <span>Loan Amount</span>
+            <strong>{formatCurrency(amount)}</strong>
+          </div>
+          <div className="requirement-item">
+            <span>Monthly Income</span>
+            {editingRequirements ? (
+              <input
+                className="requirement-input"
+                inputMode="numeric"
+                value={monthlyIncome}
+                onChange={(event) => setMonthlyIncome(event.target.value.replace(/\D/g, ""))}
+              />
+            ) : (
+              <strong>{formatCurrency(incomeValue)}</strong>
+            )}
+          </div>
+          <div className="requirement-item">
+            <span>Employment</span>
+            {editingRequirements ? (
+              <select value={employmentType} onChange={(event) => setEmploymentType(event.target.value)}>
+                <option>Salaried</option>
+                <option>Self Employed</option>
+              </select>
+            ) : (
+              <strong>{employmentType}</strong>
+            )}
+          </div>
+        </div>
+
+        <input
+          className="amount-slider"
+          type="range"
+          min={AMOUNT_SLIDER_MIN}
+          max={AMOUNT_SLIDER_MAX}
+          step={5000}
+          value={amount}
+          onChange={(event) => setAmount(Number(event.target.value))}
+          aria-label="Loan amount"
+        />
+        <div className="slider-scale">
+          <span>{formatCurrency(AMOUNT_SLIDER_MIN)}</span>
+          <span>{formatCurrency(AMOUNT_SLIDER_MAX)}</span>
+        </div>
+      </div>
+
+      {loading ? <p className="empty-copy">Finding the best offers for you...</p> : null}
+      {error ? <p className="error-text">{error}</p> : null}
+
+      {!loading && !error && result ? (
+        <>
+          <div className="offers-list-header">
+            <strong>{result.eligible_count} Offers Found</strong>
+            <span>Sort by: Interest Rate</span>
+          </div>
+
+          {offers.length ? (
+            <div className="lender-list">
+              {visibleOffers.map((offer) => (
+                <article className="lender-card" key={offer.rank}>
+                  <div className="lender-card-top">
+                    <span className="lender-badge">{offer.name.charAt(0)}</span>
+                    <div className="lender-name-block">
+                      <strong>{offer.name}</strong>
+                      <span className="lender-roi">{offer.roi_label}</span>
+                    </div>
+                    <div className="lender-salary">
+                      <span>Min. Salary</span>
+                      <strong>{formatCurrency(offer.min_salary)}</strong>
+                    </div>
+                  </div>
+                  <div className="lender-card-bottom">
+                    <span className="lender-amount">
+                      {offer.amount_label} &bull; {product.title}
+                    </span>
+                    <button className="lender-view-button" type="button" onClick={onApply}>
+                      View Details
+                      <span aria-hidden="true">{"›"}</span>
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="empty-state">
+              <strong>No matching offers yet</strong>
+              <p>Adjust your loan amount or income above, or submit an application and our team will follow up manually.</p>
+              <button className="primary-button compact" type="button" onClick={onApply}>
+                Submit Application
+              </button>
+            </div>
+          )}
+
+          {!showAll && offers.length > 5 ? (
+            <button className="secondary-button" type="button" onClick={() => setShowAll(true)}>
+              View All {result.eligible_count} Offers
+            </button>
+          ) : null}
+        </>
+      ) : null}
+    </div>
   );
 }
 
@@ -1295,6 +1492,9 @@ function MiniIcon({ kind }) {
     document: <path d="M8 3h7l4 4v14H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm7 0v5h5" />,
     gauge: <path d="M5 15a7 7 0 0 1 14 0M12 15l4-6" />,
     headset: <path d="M6 13v3a2 2 0 0 0 2 2h1v-5H6zm12 0v3a2 2 0 0 1-2 2h-1v-5h3zM6 13a6 6 0 0 1 12 0" />,
+    percent: <path d="M19 5 5 19M7.5 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM16.5 20a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />,
+    bolt: <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" strokeLinejoin="round" />,
+    calendar: <path d="M7 3v3M17 3v3M4 9h16M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z" />,
   };
 
   return (
@@ -1309,18 +1509,6 @@ function BellIcon() {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M15 18H5l2-2v-5a5 5 0 1 1 10 0v5l2 2h-4" />
       <path d="M10 18a2 2 0 0 0 4 0" />
-    </svg>
-  );
-}
-
-function AvatarIcon() {
-  return (
-    <svg viewBox="0 0 52 52" fill="none">
-      <circle cx="26" cy="26" r="26" fill="#f2f3f8" />
-      <circle cx="26" cy="20" r="9" fill="#1f2430" />
-      <path d="M13 42c2-8 8-12 13-12s11 4 13 12" fill="#f0b07d" />
-      <path d="M17 41c1-7 7-11 9-11s8 4 9 11" fill="#232833" />
-      <path d="M18 21c0-6 4-11 8-11 5 0 9 5 9 11s-4 9-9 9c-4 0-8-3-8-9z" fill="#f0b07d" />
     </svg>
   );
 }

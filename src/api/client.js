@@ -70,3 +70,12 @@ export function registerUser(payload) {
 export function getDashboard(mobile) {
   return request(`/api/dashboard/overview?mobile=${encodeURIComponent(mobile)}`);
 }
+
+export function getOffers({ product, amount, monthlyIncome }) {
+  const params = new URLSearchParams({
+    product,
+    amount: String(amount),
+    monthly_income: String(monthlyIncome),
+  });
+  return request(`/api/offers?${params.toString()}`);
+}
