@@ -34,11 +34,10 @@ const onboardingSteps = [
   { key: "mobile", label: "Mobile" },
   { key: "otp", label: "OTP" },
   { key: "details", label: "Details" },
-  { key: "selfie", label: "Selfie" },
 ];
 
 const notifications = [
-  { title: "KYC Review", description: "Your onboarding documents are securely stored and under review.", time: "Today" },
+  { title: "Profile Complete", description: "Your account details are saved and ready to go.", time: "Today" },
   { title: "New Offer", description: "Business loan partner rates updated for eligible applicants.", time: "1 day ago" },
   { title: "Security", description: "Your profile is protected with device-level and OTP verification.", time: "2 days ago" },
 ];
@@ -51,12 +50,6 @@ function formatCurrency(amount) {
   }).format(amount);
 }
 
-function maskValue(value, visibleDigits = 4) {
-  if (!value) return "Not available";
-  if (value.length <= visibleDigits) return value;
-  return `${"*".repeat(Math.max(0, value.length - visibleDigits))}${value.slice(-visibleDigits)}`;
-}
-
 function loadStoredItems(key) {
   try {
     const raw = window.localStorage.getItem(key);
@@ -64,42 +57,6 @@ function loadStoredItems(key) {
   } catch {
     return [];
   }
-}
-
-function fileToDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(new Error("Unable to read the selected file"));
-    reader.readAsDataURL(file);
-  });
-}
-
-// Phone camera photos (5-10MB+) blow past hosting request-size limits once
-// base64-encoded, which fails silently with no useful error. Downscale and
-// re-compress to JPEG client-side so the upload stays small and reliable.
-async function compressSelfieImage(file, maxDimension = 1280, quality = 0.82) {
-  const originalDataUrl = await fileToDataUrl(file);
-
-  const image = await new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error("Unable to read the selected image"));
-    img.src = originalDataUrl;
-  });
-
-  const scale = Math.min(1, maxDimension / Math.max(image.width, image.height));
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.round(image.width * scale);
-  canvas.height = Math.round(image.height * scale);
-
-  const context = canvas.getContext("2d");
-  if (!context) {
-    return originalDataUrl;
-  }
-  context.drawImage(image, 0, 0, canvas.width, canvas.height);
-
-  return canvas.toDataURL("image/jpeg", quality);
 }
 
 function useSession() {
@@ -158,15 +115,7 @@ function LoginPage({ onAuthenticated }) {
   const [error, setError] = useState("");
   const [onboarding, setOnboarding] = useState({
     fullName: "",
-    panNumber: "",
-    aadhaarNumber: "",
-    dateOfBirth: "",
-    permanentAddress: "",
-    currentAddress: "",
-    sameAsPermanent: false,
-    referenceNumber: "",
-    selfieImage: "",
-    selfieFileName: "",
+    email: "",
   });
 
   const formattedDigits = mobile.replace(/\D/g, "").slice(0, 10);
@@ -211,93 +160,29 @@ function LoginPage({ onAuthenticated }) {
   }
 
   function updateOnboarding(field, value) {
-    setOnboarding((current) => {
-      const next = { ...current, [field]: value };
-      if (field === "sameAsPermanent" && value) {
-        next.currentAddress = current.permanentAddress;
-      }
-      if (field === "permanentAddress" && current.sameAsPermanent) {
-        next.currentAddress = value;
-      }
-      return next;
-    });
-  }
-
-  function handleDetailsNext(event) {
-    event.preventDefault();
-    setError("");
-
-    if (!onboarding.fullName.trim()) {
-      setError("Please enter your full name");
-      return;
-    }
-    if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(onboarding.panNumber)) {
-      setError("Please enter a valid PAN card number");
-      return;
-    }
-    if (!/^\d{12}$/.test(onboarding.aadhaarNumber)) {
-      setError("Please enter a valid 12-digit Aadhaar number");
-      return;
-    }
-    if (!onboarding.dateOfBirth) {
-      setError("Please select your date of birth");
-      return;
-    }
-    if (onboarding.permanentAddress.trim().length < 10) {
-      setError("Please enter your permanent address");
-      return;
-    }
-    if (!onboarding.sameAsPermanent && onboarding.currentAddress.trim().length < 10) {
-      setError("Please enter your current address");
-      return;
-    }
-
-    setStep("selfie");
-  }
-
-  async function handleSelfieSelected(event) {
-    const [file] = event.target.files || [];
-    if (!file) {
-      return;
-    }
-
-    setError("");
-
-    try {
-      const image = await compressSelfieImage(file);
-      setOnboarding((current) => ({
-        ...current,
-        selfieImage: image,
-        selfieFileName: file.name,
-      }));
-    } catch (err) {
-      setError(err.message);
-    }
+    setOnboarding((current) => ({ ...current, [field]: value }));
   }
 
   async function handleRegister(event) {
     event.preventDefault();
-    setLoading(true);
     setError("");
 
-    if (!onboarding.selfieImage) {
-      setLoading(false);
-      setError("Please upload your selfie to complete onboarding");
+    if (!onboarding.fullName.trim()) {
+      setError("Please enter your name as per your PAN card");
       return;
     }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(onboarding.email.trim())) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const response = await registerUser({
         mobile: formattedDigits,
         full_name: onboarding.fullName.trim(),
-        pan_number: onboarding.panNumber,
-        aadhaar_number: onboarding.aadhaarNumber,
-        date_of_birth: onboarding.dateOfBirth,
-        permanent_address: onboarding.permanentAddress.trim(),
-        current_address: (onboarding.sameAsPermanent ? onboarding.permanentAddress : onboarding.currentAddress).trim(),
-        same_as_permanent: onboarding.sameAsPermanent,
-        reference_number: onboarding.referenceNumber.trim() || null,
-        selfie_image: onboarding.selfieImage,
+        email: onboarding.email.trim(),
       });
       onAuthenticated(response.session);
       navigate("/dashboard", { replace: true });
@@ -364,116 +249,6 @@ function LoginPage({ onAuthenticated }) {
       );
     }
 
-    if (step === "details") {
-      return (
-        <form className="auth-form" onSubmit={handleDetailsNext}>
-          <div className="step-progress" aria-label="Onboarding progress">
-            {onboardingSteps.map((item, index) => (
-              <span
-                className={`step-pill ${index <= progressIndex ? "active" : ""} ${index < progressIndex ? "done" : ""}`}
-                key={item.key}
-              >
-                {item.label}
-              </span>
-            ))}
-          </div>
-
-          <div className="form-grid">
-            <label className="text-field">
-              <span>Full Name</span>
-              <input
-                type="text"
-                value={onboarding.fullName}
-                onChange={(event) => updateOnboarding("fullName", event.target.value)}
-                placeholder="Enter your full name"
-              />
-            </label>
-
-            <label className="text-field">
-              <span>PAN Card Number</span>
-              <input
-                type="text"
-                value={onboarding.panNumber}
-                onChange={(event) => updateOnboarding("panNumber", event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10))}
-                placeholder="ABCDE1234F"
-              />
-            </label>
-
-            <label className="text-field">
-              <span>Aadhaar Number</span>
-              <input
-                type="text"
-                inputMode="numeric"
-                value={onboarding.aadhaarNumber}
-                onChange={(event) => updateOnboarding("aadhaarNumber", event.target.value.replace(/\D/g, "").slice(0, 12))}
-                placeholder="12-digit Aadhaar number"
-              />
-            </label>
-
-            <label className="text-field">
-              <span>Date of Birth</span>
-              <input
-                type="date"
-                value={onboarding.dateOfBirth}
-                onChange={(event) => updateOnboarding("dateOfBirth", event.target.value)}
-              />
-            </label>
-          </div>
-
-          <label className="checkbox-field">
-            <input
-              type="checkbox"
-              checked={onboarding.sameAsPermanent}
-              onChange={(event) => updateOnboarding("sameAsPermanent", event.target.checked)}
-            />
-            <span>Current address is the same as permanent</span>
-          </label>
-
-          <div className="form-grid">
-            <label className="text-field">
-              <span>Permanent Address</span>
-              <textarea
-                rows="2"
-                value={onboarding.permanentAddress}
-                onChange={(event) => updateOnboarding("permanentAddress", event.target.value)}
-                placeholder="Enter your permanent address"
-              />
-            </label>
-
-            <label className="text-field">
-              <span>Current Address</span>
-              <textarea
-                rows="2"
-                value={onboarding.sameAsPermanent ? onboarding.permanentAddress : onboarding.currentAddress}
-                onChange={(event) => updateOnboarding("currentAddress", event.target.value)}
-                placeholder="Enter your current address"
-                disabled={onboarding.sameAsPermanent}
-              />
-            </label>
-          </div>
-
-          <label className="text-field">
-            <span>Reference Number (Optional)</span>
-            <input
-              type="text"
-              value={onboarding.referenceNumber}
-              onChange={(event) => updateOnboarding("referenceNumber", event.target.value.slice(0, 50))}
-              placeholder="Enter a reference number if available"
-            />
-          </label>
-
-          <div className="form-actions">
-            <button className="secondary-button" type="button" onClick={() => setStep("otp")}>
-              Back
-            </button>
-            <button className="primary-button" type="submit">
-              Continue to Selfie
-            </button>
-          </div>
-        </form>
-      );
-    }
-
     return (
       <form className="auth-form" onSubmit={handleRegister}>
         <div className="step-progress" aria-label="Onboarding progress">
@@ -487,22 +262,28 @@ function LoginPage({ onAuthenticated }) {
           ))}
         </div>
 
-        <label className="upload-card">
-          <span className="upload-title">Upload Selfie</span>
-          <span className="upload-copy">Upload a clear front-facing selfie to complete your onboarding.</span>
-          <input type="file" accept="image/*" onChange={handleSelfieSelected} />
-          <span className="upload-button">{onboarding.selfieFileName ? "Replace Selfie" : "Choose Image"}</span>
-          {onboarding.selfieFileName ? <strong>{onboarding.selfieFileName}</strong> : null}
+        <label className="text-field">
+          <span>Name (as per PAN card)</span>
+          <input
+            type="text"
+            value={onboarding.fullName}
+            onChange={(event) => updateOnboarding("fullName", event.target.value)}
+            placeholder="Enter your name as per PAN card"
+          />
         </label>
 
-        {onboarding.selfieImage ? (
-          <div className="selfie-preview">
-            <img src={onboarding.selfieImage} alt="Selfie preview" />
-          </div>
-        ) : null}
+        <label className="text-field">
+          <span>Email</span>
+          <input
+            type="email"
+            value={onboarding.email}
+            onChange={(event) => updateOnboarding("email", event.target.value)}
+            placeholder="Enter your email address"
+          />
+        </label>
 
         <div className="form-actions">
-          <button className="secondary-button" type="button" onClick={() => setStep("details")}>
+          <button className="secondary-button" type="button" onClick={() => setStep("otp")}>
             Back
           </button>
           <button className="primary-button" type="submit" disabled={loading}>
@@ -550,7 +331,6 @@ function LoginPage({ onAuthenticated }) {
                 {step === "mobile" && "Continue with mobile number"}
                 {step === "otp" && "Verify your OTP"}
                 {step === "details" && "Complete your basic details"}
-                {step === "selfie" && "Upload your selfie"}
               </h2>
             </div>
           </div>
@@ -722,7 +502,7 @@ function DashboardPage({ session, onLogout }) {
         );
       case "profile":
         return (
-          <WorkspacePanel title="My Profile" subtitle="View your onboarding, KYC, and contact details.">
+          <WorkspacePanel title="My Profile" subtitle="View your account and contact details.">
             <ProfilePanel user={data.user} />
           </WorkspacePanel>
         );
@@ -1038,13 +818,8 @@ function ProfilePanel({ user }) {
   const profileRows = [
     ["Full Name", `${user.first_name}${user.last_name ? ` ${user.last_name}` : ""}`],
     ["Mobile Number", user.mobile],
+    ["Email", user.email || "Not available"],
     ["Role", user.role],
-    ["Date of Birth", user.date_of_birth || "Not available"],
-    ["PAN Card", maskValue(user.pan_number)],
-    ["Aadhaar Number", maskValue(user.aadhaar_number)],
-    ["Permanent Address", user.permanent_address || "Not available"],
-    ["Current Address", user.current_address || "Not available"],
-    ["Reference Number", user.reference_number || "Not provided"],
   ];
 
   return (
@@ -1304,7 +1079,7 @@ function SecurityPanel() {
     <div className="security-grid">
       <div className="security-card">
         <strong>Encrypted Data</strong>
-        <p>Profile, KYC, and application details are protected with controlled storage and secure transit.</p>
+        <p>Profile and application details are protected with controlled storage and secure transit.</p>
       </div>
       <div className="security-card">
         <strong>OTP Access</strong>
