@@ -619,21 +619,7 @@ input[type="number"] {
 
 @media (min-width: 981px) {
   .dashboard-shell {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 24px;
-  }
-
-  .dashboard-frame {
-    margin: 0;
-  }
-
-  .sidebar {
-    position: sticky;
-    top: 20px;
-    order: -1;
-    flex: none;
+    padding-left: 300px;
   }
 }
 
@@ -1463,11 +1449,11 @@ input[type="number"] {
 
 @media (min-width: 981px) {
   .sidebar {
-    position: sticky;
     width: 260px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--panel-border);
-    border-radius: 28px;
+    transform: none;
+    box-shadow: 4px 0 24px rgba(46, 30, 20, 0.08);
+    border-right: 1px solid var(--panel-border);
+    border-radius: 0;
   }
 }
 
