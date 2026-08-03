@@ -74,7 +74,7 @@ a {
   position: relative;
   background-color: #221a15;
   background-size: cover;
-  background-position: center;
+  background-position: center 22%;
   background-repeat: no-repeat;
 }
 
@@ -101,6 +101,17 @@ a {
   flex: 1.15 1 0%;
   min-width: 0;
   padding: 0 clamp(6px, 2vw, 22px);
+}
+
+.showcase-panel {
+  display: inline-block;
+  max-width: 600px;
+  padding: clamp(20px, 3vw, 30px) clamp(22px, 3vw, 32px);
+  border-radius: 28px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  box-shadow: 0 24px 60px rgba(15, 9, 5, 0.16);
 }
 
 .auth-brand,
@@ -241,7 +252,7 @@ a {
 .feature-row {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(16px, 3vw, 34px);
+  gap: clamp(12px, 2.4vw, 22px);
   margin-top: clamp(22px, 4.5vh, 44px);
 }
 
@@ -270,7 +281,9 @@ a {
 
 .feature-copy {
   display: grid;
+  gap: 2px;
   line-height: 1.28;
+  white-space: nowrap;
 }
 
 .feature-copy strong {

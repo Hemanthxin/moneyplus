@@ -311,32 +311,34 @@ function LoginPage({ onAuthenticated }) {
       <div className="auth-scrim" />
       <section className="auth-stage">
         <div className="auth-showcase">
-          <div className="brand-block auth-brand">
-            <Logo />
-          </div>
+          <div className="showcase-panel">
+            <div className="brand-block auth-brand">
+              <Logo />
+            </div>
 
-          <div className="hero-copy">
-            <h1>
-              India&apos;s Smart
-              <br />
-              Financial Partner
-            </h1>
-            <span className="hero-rule" aria-hidden="true" />
-            <p>Smart Finance. Simplified for You.</p>
-          </div>
+            <div className="hero-copy">
+              <h1>
+                India&apos;s Smart
+                <br />
+                Financial Partner
+              </h1>
+              <span className="hero-rule" aria-hidden="true" />
+              <p>Smart Finance. Simplified for You.</p>
+            </div>
 
-          <div className="feature-row" aria-hidden="true">
-            {trustFeatures.map((feature) => (
-              <div className="feature-item" key={feature.title}>
-                <span className="feature-icon">
-                  <MiniIcon kind={feature.icon} />
-                </span>
-                <div className="feature-copy">
-                  <strong>{feature.title}</strong>
-                  <span>{feature.subtitle}</span>
+            <div className="feature-row" aria-hidden="true">
+              {trustFeatures.map((feature) => (
+                <div className="feature-item" key={feature.title}>
+                  <span className="feature-icon">
+                    <MiniIcon kind={feature.icon} />
+                  </span>
+                  <div className="feature-copy">
+                    <strong>{feature.title}</strong>
+                    <span>{feature.subtitle}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
