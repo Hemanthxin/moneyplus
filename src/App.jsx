@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { getDashboard, getOffers, registerUser, sendOtp, verifyOtp } from "./api/client";
+import loginBgImage from "./assets/login-bg.jpg";
 
 const navItems = [
   { title: "Home", panel: "home" },
@@ -306,7 +307,7 @@ function LoginPage({ onAuthenticated }) {
   }
 
   return (
-    <main className="auth-shell">
+    <main className="auth-shell" style={{ backgroundImage: `url(${loginBgImage})` }}>
       <div className="auth-scrim" />
       <section className="auth-stage">
         <div className="auth-showcase">

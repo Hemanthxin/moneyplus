@@ -72,7 +72,10 @@ a {
   place-items: center;
   padding: clamp(12px, 3vh, 28px);
   position: relative;
-  background: #221a15 url("./assets/login-bg.jpg") center/cover no-repeat;
+  background-color: #221a15;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .auth-scrim {
