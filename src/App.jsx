@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { getDashboard, getOffers, registerUser, sendOtp, verifyOtp } from "./api/client";
-import homeHeroImage from "./assets/home-hero.jpg";
 
 const navItems = [
   { title: "Home", panel: "home" },
@@ -34,6 +33,12 @@ const onboardingSteps = [
   { key: "mobile", label: "Mobile" },
   { key: "otp", label: "OTP" },
   { key: "details", label: "Details" },
+];
+
+const trustFeatures = [
+  { title: "Secure", subtitle: "100% Safe & Secure", icon: "shield" },
+  { title: "Fast", subtitle: "Quick Approvals", icon: "bolt" },
+  { title: "50K+", subtitle: "Happy Customers", icon: "people" },
 ];
 
 const notifications = [
@@ -212,6 +217,7 @@ function LoginPage({ onAuthenticated }) {
                 <span />
               </span>
               <span className="country-code">+91</span>
+              <span className="country-chevron" aria-hidden="true">▾</span>
             </div>
             <input
               type={step === "mobile" ? "tel" : "text"}
@@ -231,7 +237,12 @@ function LoginPage({ onAuthenticated }) {
           </label>
 
           <button className="primary-button" type="submit" disabled={loading}>
-            {loading ? "Please wait..." : step === "mobile" ? "Send OTP" : "Verify OTP"}
+            <span>{loading ? "Please wait..." : step === "mobile" ? "Send OTP" : "Verify OTP"}</span>
+            {!loading ? (
+              <span className="button-arrow" aria-hidden="true">
+                →
+              </span>
+            ) : null}
           </button>
 
           <p className="auth-helper">
@@ -296,49 +307,60 @@ function LoginPage({ onAuthenticated }) {
 
   return (
     <main className="auth-shell">
-      <div className="auth-gradient" />
+      <div className="auth-scrim" />
       <section className="auth-stage">
         <div className="auth-showcase">
-          <div className="auth-showcase-content">
-            <div className="brand-block auth-brand">
-              <Logo variant="stacked" />
-              <p className="brand-tagline">Smart Finance, Simplified</p>
-            </div>
+          <div className="brand-block auth-brand">
+            <Logo />
+          </div>
 
-            <div className="hero-copy">
-              <h1>India&apos;s Smart Financial Partner</h1>
-              <p>Personal Loan &amp; Home Loan</p>
-            </div>
+          <div className="hero-copy">
+            <h1>
+              India&apos;s Smart
+              <br />
+              Financial Partner
+            </h1>
+            <span className="hero-rule" aria-hidden="true" />
+            <p>Smart Finance. Simplified for You.</p>
+          </div>
 
-            <div className="hero-pills" aria-hidden="true">
-              <span>Personal Loan</span>
-              <span>Business Loan</span>
-              <span>Home Loan</span>
-            </div>
-
-            <div className="hero-visual">
-              <img className="hero-image" src={homeHeroImage} alt="Home loan illustration with house, money bag, coins, and credit score meter" />
-            </div>
+          <div className="feature-row" aria-hidden="true">
+            {trustFeatures.map((feature) => (
+              <div className="feature-item" key={feature.title}>
+                <span className="feature-icon">
+                  <MiniIcon kind={feature.icon} />
+                </span>
+                <div className="feature-copy">
+                  <strong>{feature.title}</strong>
+                  <span>{feature.subtitle}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="auth-card">
-          <div className="auth-card-header">
+          <div className="auth-card-header centered">
             <Logo />
-            <div>
-              <p className="auth-kicker">Associate Login</p>
-              <h2>
-                {step === "mobile" && "Continue with mobile number"}
-                {step === "otp" && "Verify your OTP"}
-                {step === "details" && "Complete your basic details"}
-              </h2>
-            </div>
+            <p className="welcome-kicker">
+              {step === "mobile" ? "— Welcome Back —" : "Associate Login"}
+            </p>
+            <h2>
+              {step === "mobile" && "Login to your Associate account"}
+              {step === "otp" && "Verify your OTP"}
+              {step === "details" && "Complete your basic details"}
+            </h2>
           </div>
 
           {renderStepForm()}
 
           {message ? <p className="info-text">{message}</p> : null}
           {error ? <p className="error-text">{error}</p> : null}
+
+          <p className="auth-security-note">
+            <LockIcon />
+            Your data is safe and secure with us
+          </p>
 
           <p className="disclaimer">
             By continuing, you agree to the <a href="/">Privacy Policy</a> and <a href="/">Terms of Use</a>.
@@ -1525,11 +1547,29 @@ function MiniIcon({ kind }) {
     percent: <path d="M19 5 5 19M7.5 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM16.5 20a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />,
     bolt: <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" strokeLinejoin="round" />,
     calendar: <path d="M7 3v3M17 3v3M4 9h16M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z" />,
+    shield: <path d="M12 3c3 2 6 2 6 2v6c0 5-3 7.5-6 9-3-1.5-6-4-6-9V5s3 0 6-2z" />,
+    people: (
+      <>
+        <circle cx="9" cy="8" r="3" />
+        <path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6" />
+        <circle cx="17" cy="9" r="2.6" />
+        <path d="M15.5 14.2c2.6.4 4.5 2.5 4.5 5.8" />
+      </>
+    ),
   };
 
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       {icons[kind]}
+    </svg>
+  );
+}
+
+function LockIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="5" y="11" width="14" height="9" rx="2" />
+      <path d="M8 11V7a4 4 0 0 1 8 0v4" />
     </svg>
   );
 }
