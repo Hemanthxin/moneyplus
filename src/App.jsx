@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { getDashboard, getOffers, registerUser, sendOtp, verifyOtp } from "./api/client";
@@ -450,7 +450,7 @@ function DashboardPage({ session, onLogout }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-  const [activePanel, setActivePanel] = useState("home");
+  const [activePanel, setActivePanelState] = useState("home");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [applications, setApplications] = useState([]);
   const [expertRequests, setExpertRequests] = useState([]);
@@ -458,6 +458,7 @@ function DashboardPage({ session, onLogout }) {
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== "undefined" && window.matchMedia("(min-width: 981px)").matches
   );
+  const isPoppingPanelRef = useRef(false);
 
   useEffect(() => {
     const query = window.matchMedia("(min-width: 981px)");
@@ -465,6 +466,32 @@ function DashboardPage({ session, onLogout }) {
     query.addEventListener("change", handleChange);
     return () => query.removeEventListener("change", handleChange);
   }, []);
+
+  useEffect(() => {
+    // Panel switches (home -> compare -> product, etc.) never touch the URL,
+    // so without this the whole dashboard is only ever one browser-history
+    // entry deep. Pressing the hardware/browser back button then exits the
+    // app instead of stepping back a panel. Tag a base entry for "home" and
+    // push one per panel change so back() steps through panels first.
+    window.history.replaceState({ panel: "home" }, "");
+
+    function handlePopState(event) {
+      isPoppingPanelRef.current = true;
+      setActivePanelState(event.state?.panel || "home");
+    }
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  function setActivePanel(panel) {
+    if (isPoppingPanelRef.current) {
+      isPoppingPanelRef.current = false;
+    } else {
+      window.history.pushState({ panel }, "");
+    }
+    setActivePanelState(panel);
+  }
 
   useEffect(() => {
     if (!sidebarOpen || isDesktop) return undefined;
