@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { getDashboard, getOffers, registerUser, sendOtp, verifyOtp } from "./api/client";
 import loginBgImage from "./assets/login-bg.jpg";
 import loginBgMobileImage from "./assets/login-bg-mobile.png";
@@ -42,6 +43,32 @@ const trustFeatures = [
   { title: "Fast", subtitle: "Quick Approvals", icon: "bolt" },
   { title: "50K+", subtitle: "Happy Customers", icon: "people" },
 ];
+
+const showcaseStagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
+};
+
+const fadeUpItem = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
+};
+
+const authCardVariants = {
+  hidden: { opacity: 0, y: 28, scale: 0.98 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+const stepVariants = {
+  hidden: { opacity: 0, x: 18 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.32, ease: "easeOut" } },
+  exit: { opacity: 0, x: -18, transition: { duration: 0.2, ease: "easeIn" } },
+};
 
 const notifications = [
   { title: "Profile Complete", description: "Your account details are saved and ready to go.", time: "Today" },
@@ -210,7 +237,15 @@ function LoginPage({ onAuthenticated }) {
   function renderStepForm() {
     if (step === "mobile" || step === "otp") {
       return (
-        <form className="auth-form" onSubmit={step === "mobile" ? handleSendOtp : handleVerifyOtp}>
+        <motion.form
+          key={step}
+          className="auth-form"
+          variants={stepVariants}
+          initial="hidden"
+          animate="show"
+          exit="exit"
+          onSubmit={step === "mobile" ? handleSendOtp : handleVerifyOtp}
+        >
           <label className="field-card">
             <div className="field-leading">
               <span className="flag-india" aria-hidden="true">
@@ -238,14 +273,20 @@ function LoginPage({ onAuthenticated }) {
             </span>
           </label>
 
-          <button className="primary-button" type="submit" disabled={loading}>
+          <motion.button
+            className="primary-button"
+            type="submit"
+            disabled={loading}
+            whileHover={loading ? undefined : { scale: 1.015 }}
+            whileTap={loading ? undefined : { scale: 0.97 }}
+          >
             <span>{loading ? "Please wait..." : step === "mobile" ? "Send OTP" : "Verify OTP"}</span>
             {!loading ? (
               <span className="button-arrow" aria-hidden="true">
                 →
               </span>
             ) : null}
-          </button>
+          </motion.button>
 
           <p className="auth-helper">
             {step === "mobile"
@@ -258,12 +299,20 @@ function LoginPage({ onAuthenticated }) {
               Change mobile number
             </button>
           ) : null}
-        </form>
+        </motion.form>
       );
     }
 
     return (
-      <form className="auth-form" onSubmit={handleRegister}>
+      <motion.form
+        key={step}
+        className="auth-form"
+        variants={stepVariants}
+        initial="hidden"
+        animate="show"
+        exit="exit"
+        onSubmit={handleRegister}
+      >
         <div className="step-progress" aria-label="Onboarding progress">
           {onboardingSteps.map((item, index) => (
             <span
@@ -299,11 +348,17 @@ function LoginPage({ onAuthenticated }) {
           <button className="secondary-button" type="button" onClick={() => setStep("otp")}>
             Back
           </button>
-          <button className="primary-button" type="submit" disabled={loading}>
+          <motion.button
+            className="primary-button"
+            type="submit"
+            disabled={loading}
+            whileHover={loading ? undefined : { scale: 1.015 }}
+            whileTap={loading ? undefined : { scale: 0.97 }}
+          >
             {loading ? "Creating your profile..." : "Complete Registration"}
-          </button>
+          </motion.button>
         </div>
-      </form>
+      </motion.form>
     );
   }
 
@@ -318,12 +373,17 @@ function LoginPage({ onAuthenticated }) {
       <div className="auth-scrim" />
       <section className="auth-stage">
         <div className="auth-showcase">
-          <div className="showcase-panel">
-            <div className="brand-block auth-brand">
+          <motion.div
+            className="showcase-panel"
+            variants={showcaseStagger}
+            initial="hidden"
+            animate="show"
+          >
+            <motion.div className="brand-block auth-brand" variants={fadeUpItem}>
               <Logo />
-            </div>
+            </motion.div>
 
-            <div className="hero-copy">
+            <motion.div className="hero-copy" variants={fadeUpItem}>
               <h1>
                 <span className="hero-line-primary">India&apos;s Smart</span>
                 <br />
@@ -331,9 +391,9 @@ function LoginPage({ onAuthenticated }) {
               </h1>
               <span className="hero-rule" aria-hidden="true" />
               <p>Smart Finance. Simplified for You.</p>
-            </div>
+            </motion.div>
 
-            <div className="feature-row" aria-hidden="true">
+            <motion.div className="feature-row" aria-hidden="true" variants={fadeUpItem}>
               {trustFeatures.map((feature) => (
                 <div className="feature-item" key={feature.title}>
                   <span className="feature-icon">
@@ -345,11 +405,16 @@ function LoginPage({ onAuthenticated }) {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
 
-        <div className="auth-card">
+        <motion.div
+          className="auth-card"
+          variants={authCardVariants}
+          initial="hidden"
+          animate="show"
+        >
           <div className="auth-card-header centered">
             <Logo />
             <p className="welcome-kicker">
@@ -362,7 +427,7 @@ function LoginPage({ onAuthenticated }) {
             </h2>
           </div>
 
-          {renderStepForm()}
+          <AnimatePresence mode="wait">{renderStepForm()}</AnimatePresence>
 
           {message ? <p className="info-text">{message}</p> : null}
           {error ? <p className="error-text">{error}</p> : null}
@@ -375,7 +440,7 @@ function LoginPage({ onAuthenticated }) {
           <p className="disclaimer">
             By continuing, you agree to the <a href="/">Privacy Policy</a> and <a href="/">Terms of Use</a>.
           </p>
-        </div>
+        </motion.div>
       </section>
     </main>
   );
