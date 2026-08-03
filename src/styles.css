@@ -1603,6 +1603,7 @@ input[type="number"] {
 
   .auth-card {
     flex: none;
+    min-width: 0;
     max-width: 540px;
     width: 100%;
     margin: 0 auto;
@@ -1815,6 +1816,7 @@ input[type="number"] {
 
   .auth-card {
     flex: none;
+    min-width: 0;
     width: 100%;
     margin: 0;
     padding: 26px 22px 22px;
