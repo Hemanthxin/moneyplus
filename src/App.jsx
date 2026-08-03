@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { getDashboard, getOffers, registerUser, sendOtp, verifyOtp } from "./api/client";
 import loginBgImage from "./assets/login-bg.jpg";
+import loginBgMobileImage from "./assets/login-bg-mobile.png";
 
 const navItems = [
   { title: "Home", panel: "home" },
@@ -229,11 +230,11 @@ function LoginPage({ onAuthenticated }) {
                   ? setMobile(event.target.value.replace(/\D/g, "").slice(0, 10))
                   : setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))
               }
-              placeholder={step === "mobile" ? "Enter Mobile Number" : "Enter OTP"}
+              placeholder={step === "mobile" ? "Enter mobile number" : "Enter OTP"}
               aria-label={step === "mobile" ? "Mobile number" : "OTP"}
             />
             <span className="digit-count">
-              {step === "mobile" ? `${formattedDigits.length} / 10 digits` : `${otp.length} / 6 digits`}
+              {step === "mobile" ? `${formattedDigits.length} / 10` : `${otp.length} / 6`}
             </span>
           </label>
 
@@ -307,7 +308,13 @@ function LoginPage({ onAuthenticated }) {
   }
 
   return (
-    <main className="auth-shell" style={{ backgroundImage: `url(${loginBgImage})` }}>
+    <main
+      className="auth-shell"
+      style={{
+        "--login-bg-desktop": `url(${loginBgImage})`,
+        "--login-bg-mobile": `url(${loginBgMobileImage})`,
+      }}
+    >
       <div className="auth-scrim" />
       <section className="auth-stage">
         <div className="auth-showcase">
@@ -318,9 +325,9 @@ function LoginPage({ onAuthenticated }) {
 
             <div className="hero-copy">
               <h1>
-                India&apos;s Smart
+                <span className="hero-line-primary">India&apos;s Smart</span>
                 <br />
-                Financial Partner
+                <span className="hero-line-accent">Financial Partner</span>
               </h1>
               <span className="hero-rule" aria-hidden="true" />
               <p>Smart Finance. Simplified for You.</p>
@@ -346,7 +353,7 @@ function LoginPage({ onAuthenticated }) {
           <div className="auth-card-header centered">
             <Logo />
             <p className="welcome-kicker">
-              {step === "mobile" ? "— Welcome Back —" : "Associate Login"}
+              {step === "mobile" ? "Welcome Back!" : "Associate Login"}
             </p>
             <h2>
               {step === "mobile" && "Login to your Associate account"}
