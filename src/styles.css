@@ -21,6 +21,7 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scrollbar-width: none;
+  scroll-behavior: smooth;
 }
 
 html::-webkit-scrollbar {
