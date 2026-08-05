@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, animate, motion, useInView } from "framer-motion";
 import { getDashboard, getOffers } from "../api/client";
-import { revealUp, revealViewport } from "../animations";
+import { revealStagger, revealUp, revealViewport } from "../animations";
 import { BellIcon, Illustration, Logo, MiniIcon, ShieldBadge } from "../components/icons";
 
 const navItems = [
@@ -309,7 +309,7 @@ function DashboardPage({ session, onLogout }) {
   return (
     <main className="dashboard-shell">
       <div className="dashboard-frame">
-        <header className="topbar">
+        <motion.header className="topbar" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
           {isDesktop ? null : (
             <button className="menu-button" type="button" aria-label="Open menu" onClick={() => setSidebarOpen(true)}>
               <span />
@@ -319,22 +319,36 @@ function DashboardPage({ session, onLogout }) {
           )}
           <Logo />
           <div className="topbar-actions">
-            <button className="bell-button" type="button" aria-label="Notifications" onClick={() => setActivePanel("notifications")}>
+            <motion.button
+              className="bell-button"
+              type="button"
+              aria-label="Notifications"
+              onClick={() => setActivePanel("notifications")}
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.94 }}
+            >
               <BellIcon />
               <strong>3</strong>
-            </button>
+            </motion.button>
           </div>
-        </header>
+        </motion.header>
 
-        <section className="welcome-block">
+        <motion.section className="welcome-block" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}>
           <h1>
             Hello, {data.user.first_name}! <span>{"\u{1F44B}"}</span>
           </h1>
           <p>Find the best financial solutions for you</p>
-        </section>
+        </motion.section>
 
+        <AnimatePresence mode="wait">
         {activePanel === "home" ? (
-          <>
+          <motion.div
+            key="home"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          >
             <motion.section
               className="promo-banner panel"
               role="button"
@@ -495,11 +509,19 @@ function DashboardPage({ session, onLogout }) {
                 {"›"}
               </button>
             </motion.section>
-          </>
+          </motion.div>
         ) : (
-          <section className="workspace-card panel">{renderWorkspace()}</section>
+          <motion.div
+            key={activePanel}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <section className="workspace-card panel">{renderWorkspace()}</section>
+          </motion.div>
         )}
-
+        </AnimatePresence>
       </div>
 
       <nav className="bottom-tab-bar">
@@ -510,6 +532,13 @@ function DashboardPage({ session, onLogout }) {
             key={item.title}
             onClick={() => setActivePanel(item.panel)}
           >
+            {activeNavPanel === item.panel ? (
+              <motion.span
+                className="bottom-tab-dot"
+                layoutId="bottomTabDot"
+                transition={{ type: "spring", stiffness: 420, damping: 32 }}
+              />
+            ) : null}
             <span className={`nav-glyph glyph-${index + 1}`} />
             {item.title}
           </button>
@@ -540,8 +569,17 @@ function DashboardPage({ session, onLogout }) {
                 setSidebarOpen(false);
               }}
             >
-              <span className={`nav-glyph glyph-${index + 1}`} />
-              {item.title}
+              {activeNavPanel === item.panel ? (
+                <motion.span
+                  className="sidebar-nav-pill"
+                  layoutId="sidebarNavPill"
+                  transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                />
+              ) : null}
+              <span className="sidebar-nav-content">
+                <span className={`nav-glyph glyph-${index + 1}`} />
+                {item.title}
+              </span>
             </button>
           ))}
         </nav>
@@ -553,12 +591,12 @@ function DashboardPage({ session, onLogout }) {
 function WorkspacePanel({ title, subtitle, children }) {
   return (
     <div className="workspace-shell">
-      <div className="workspace-header">
+      <motion.div className="workspace-header" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
         <div>
           <h2>{title}</h2>
           <p>{subtitle}</p>
         </div>
-      </div>
+      </motion.div>
       <div className="workspace-body">{children}</div>
     </div>
   );
@@ -575,9 +613,9 @@ function ApplicationsPanel({ applications, onOpenProduct }) {
   }
 
   return (
-    <div className="application-list">
+    <motion.div className="application-list" variants={revealStagger} initial="hidden" animate="show">
       {applications.map((application) => (
-        <article className="application-row" key={application.id}>
+        <motion.article className="application-row" key={application.id} variants={revealUp} whileHover={{ y: -2 }}>
           <div>
             <strong>{application.productTitle}</strong>
             <p>
@@ -594,23 +632,31 @@ function ApplicationsPanel({ applications, onOpenProduct }) {
               Apply again
             </button>
           </div>
-        </article>
+        </motion.article>
       ))}
-    </div>
+    </motion.div>
   );
 }
 
 function OffersPanel({ products, onOpenProduct }) {
   return (
-    <div className="offer-grid">
+    <motion.div className="offer-grid" variants={revealStagger} initial="hidden" animate="show">
       {products.slice(0, 6).map((product) => (
-        <button className="offer-card" type="button" key={product.rank} onClick={() => onOpenProduct(product)}>
+        <motion.button
+          className="offer-card"
+          type="button"
+          key={product.rank}
+          onClick={() => onOpenProduct(product)}
+          variants={revealUp}
+          whileHover={{ y: -4 }}
+          whileTap={{ scale: 0.98 }}
+        >
           <strong>{product.title}</strong>
           <p>{product.subtitle}</p>
           <span>{product.features[0]}</span>
-        </button>
+        </motion.button>
       ))}
-    </div>
+    </motion.div>
   );
 }
 
@@ -624,47 +670,64 @@ function ProfilePanel({ user, notifications, onLogout, onOpenPanel }) {
 
   return (
     <div className="profile-shell">
-      <div className="profile-grid">
+      <motion.div className="profile-grid" variants={revealStagger} initial="hidden" animate="show">
         {profileRows.map(([label, value]) => (
-          <div className="profile-item" key={label}>
+          <motion.div className="profile-item" key={label} variants={revealUp}>
             <span>{label}</span>
             <strong>{value}</strong>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
-      <div className="more-grid">
-        <button className="more-card" type="button" onClick={() => onOpenPanel("notifications")}>
+      <motion.div className="more-grid" variants={revealStagger} initial="hidden" animate="show">
+        <motion.button className="more-card" type="button" onClick={() => onOpenPanel("notifications")} variants={revealUp} whileHover={{ y: -3 }}>
           <strong>Notifications</strong>
           <span>{notifications.length} recent updates</span>
-        </button>
-        <button className="more-card" type="button" onClick={() => onOpenPanel("security")}>
+        </motion.button>
+        <motion.button className="more-card" type="button" onClick={() => onOpenPanel("security")} variants={revealUp} whileHover={{ y: -3 }}>
           <strong>Security Center</strong>
           <span>Review privacy and platform safeguards</span>
-        </button>
-        <button className="more-card logout" type="button" onClick={onLogout}>
+        </motion.button>
+        <motion.button className="more-card logout" type="button" onClick={onLogout} variants={revealUp} whileHover={{ y: -3 }}>
           <strong>Logout</strong>
           <span>Sign out of the dashboard</span>
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     </div>
   );
 }
 
+function AnimatedCurrency({ value }) {
+  const [display, setDisplay] = useState(value);
+  const prevValue = useRef(value);
+
+  useEffect(() => {
+    const controls = animate(prevValue.current, value, {
+      duration: 0.5,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (current) => setDisplay(current),
+    });
+    prevValue.current = value;
+    return () => controls.stop();
+  }, [value]);
+
+  return <strong>{formatCurrency(Math.round(display))}</strong>;
+}
+
 function CalculatorsPanel({ onTalkToExpert }) {
   return (
-    <div className="calculators-shell">
-      <div className="calculator-block">
+    <motion.div className="calculators-shell" variants={revealStagger} initial="hidden" animate="show">
+      <motion.div className="calculator-block" variants={revealUp}>
         <h3>Eligibility Check</h3>
         <p className="calculator-intro">Estimate how much you may qualify for before applying.</p>
         <EligibilityPanel />
-      </div>
-      <div className="calculator-block">
+      </motion.div>
+      <motion.div className="calculator-block" variants={revealUp}>
         <h3>EMI Calculator</h3>
         <p className="calculator-intro">Plan your monthly outflow before you submit a loan application.</p>
         <EmiPanel />
-      </div>
-      <div className="calculator-cta">
+      </motion.div>
+      <motion.div className="calculator-cta" variants={revealUp}>
         <div>
           <strong>Need help deciding?</strong>
           <p>Talk to one of our loan specialists for personalised guidance.</p>
@@ -672,8 +735,8 @@ function CalculatorsPanel({ onTalkToExpert }) {
         <button className="outline-button" type="button" onClick={onTalkToExpert}>
           Talk to Expert
         </button>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -718,7 +781,7 @@ function EligibilityPanel() {
       </div>
       <div className="result-card">
         <span>Estimated Eligible Amount</span>
-        <strong>{formatCurrency(eligibleAmount)}</strong>
+        <AnimatedCurrency value={eligibleAmount} />
         <p>This is a quick estimate for planning. Final approval depends on KYC, bureau, and lender policy.</p>
       </div>
     </div>
@@ -759,21 +822,39 @@ function EmiPanel() {
       </div>
       <div className="result-card">
         <span>Estimated Monthly EMI</span>
-        <strong>{formatCurrency(Math.round(emi || 0))}</strong>
+        <AnimatedCurrency value={Math.round(emi || 0)} />
         <p>Total repayment planning becomes easier when you compare EMI with your existing monthly obligations.</p>
       </div>
     </div>
   );
 }
 
+function AnimatedScoreNumber({ score }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true });
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return undefined;
+    const controls = animate(0, score, {
+      duration: 1.1,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (value) => setDisplay(Math.round(value)),
+    });
+    return () => controls.stop();
+  }, [inView, score]);
+
+  return <strong ref={ref}>{display}</strong>;
+}
+
 function CreditPanel({ creditScore, scoreSegments, scoreInsight }) {
   const isStrong = creditScore.score >= 750;
   return (
     <div className="credit-detail">
-      <div className="score-layout">
+      <motion.div className="score-layout" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         <div className="score-ring" style={{ "--progress": `${scoreSegments}%` }}>
           <div className="score-ring-inner">
-            <strong>{creditScore.score}</strong>
+            <AnimatedScoreNumber score={creditScore.score} />
             <span>{creditScore.label}</span>
           </div>
         </div>
@@ -782,25 +863,25 @@ function CreditPanel({ creditScore, scoreSegments, scoreInsight }) {
           <strong>{creditScore.last_updated}</strong>
           <p className="score-insight">{scoreInsight}</p>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="insight-grid">
-        <div className="insight-card">
+      <motion.div className="insight-grid" variants={revealStagger} initial="hidden" animate="show">
+        <motion.div className="insight-card" variants={revealUp} whileHover={{ y: -3 }}>
           <span>Current Score</span>
           <strong>{creditScore.score}</strong>
           <p>{creditScore.label} profile. Last refreshed on {creditScore.last_updated}.</p>
-        </div>
-        <div className="insight-card">
+        </motion.div>
+        <motion.div className="insight-card" variants={revealUp} whileHover={{ y: -3 }}>
           <span>Lender Impact</span>
           <strong>{isStrong ? "Better pricing likely" : "Improve score for stronger approval odds"}</strong>
           <p>{isStrong ? "You may qualify for more competitive interest offers." : "Timely repayments and lower utilization can improve approval quality."}</p>
-        </div>
-        <div className="insight-card">
+        </motion.div>
+        <motion.div className="insight-card" variants={revealUp} whileHover={{ y: -3 }}>
           <span>Recommended Next Step</span>
           <strong>{isStrong ? "Proceed with application" : "Check eligibility first"}</strong>
           <p>{isStrong ? "Use the services grid to submit an application." : "Run an eligibility and EMI check before applying."}</p>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
@@ -843,7 +924,18 @@ function ExpertPanel({ onSave }) {
           Request Callback
         </button>
       </div>
-      {submitted ? <p className="info-text">Callback request saved. An expert will reach out based on your preferred slot.</p> : null}
+      <AnimatePresence>
+        {submitted ? (
+          <motion.p
+            className="info-text"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+          >
+            Callback request saved. An expert will reach out based on your preferred slot.
+          </motion.p>
+        ) : null}
+      </AnimatePresence>
     </form>
   );
 }
@@ -909,7 +1001,7 @@ function OfferComparePanel({ product, onApply }) {
 
   return (
     <div className="compare-shell">
-      <div className="requirements-card">
+      <motion.div className="requirements-card" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
         <div className="requirements-header">
           <strong>Your Requirements</strong>
           <button className="text-button" type="button" onClick={() => setEditingRequirements((current) => !current)}>
@@ -962,7 +1054,7 @@ function OfferComparePanel({ product, onApply }) {
           <span>{formatCurrency(AMOUNT_SLIDER_MIN)}</span>
           <span>{formatCurrency(AMOUNT_SLIDER_MAX)}</span>
         </div>
-      </div>
+      </motion.div>
 
       {loading ? <p className="empty-copy">Finding the best offers for you...</p> : null}
       {error ? <p className="error-text">{error}</p> : null}
@@ -975,9 +1067,9 @@ function OfferComparePanel({ product, onApply }) {
           </div>
 
           {offers.length ? (
-            <div className="lender-list">
+            <motion.div className="lender-list" variants={revealStagger} initial="hidden" animate="show">
               {visibleOffers.map((offer) => (
-                <article className="lender-card" key={offer.rank}>
+                <motion.article className="lender-card" key={offer.rank} variants={revealUp} whileHover={{ y: -3 }}>
                   <div className="lender-card-top">
                     <LenderLogo name={offer.name} logoUrl={offer.logo_url} />
                     <div className="lender-name-block">
@@ -998,9 +1090,9 @@ function OfferComparePanel({ product, onApply }) {
                       <span aria-hidden="true">{"›"}</span>
                     </button>
                   </div>
-                </article>
+                </motion.article>
               ))}
-            </div>
+            </motion.div>
           ) : (
             <div className="empty-state">
               <strong>No matching offers yet</strong>
@@ -1079,35 +1171,46 @@ function ProductApplicationPanel({ product, onSubmit }) {
           Submit Application
         </button>
       </div>
-      {submitted ? <p className="info-text">Application submitted. Check “My Applications” for status updates.</p> : null}
+      <AnimatePresence>
+        {submitted ? (
+          <motion.p
+            className="info-text"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+          >
+            Application submitted. Check “My Applications” for status updates.
+          </motion.p>
+        ) : null}
+      </AnimatePresence>
     </form>
   );
 }
 
 function SecurityPanel() {
+  const cards = [
+    { title: "Encrypted Data", body: "Profile and application details are protected with controlled storage and secure transit." },
+    { title: "OTP Access", body: "Every dashboard login requires mobile OTP verification before the user session is restored." },
+    { title: "Audit Friendly", body: "The onboarding flow captures required identity details once and keeps application actions traceable." },
+  ];
+
   return (
-    <div className="security-grid">
-      <div className="security-card">
-        <strong>Encrypted Data</strong>
-        <p>Profile and application details are protected with controlled storage and secure transit.</p>
-      </div>
-      <div className="security-card">
-        <strong>OTP Access</strong>
-        <p>Every dashboard login requires mobile OTP verification before the user session is restored.</p>
-      </div>
-      <div className="security-card">
-        <strong>Audit Friendly</strong>
-        <p>The onboarding flow captures required identity details once and keeps application actions traceable.</p>
-      </div>
-    </div>
+    <motion.div className="security-grid" variants={revealStagger} initial="hidden" animate="show">
+      {cards.map((card) => (
+        <motion.div className="security-card" key={card.title} variants={revealUp} whileHover={{ y: -3 }}>
+          <strong>{card.title}</strong>
+          <p>{card.body}</p>
+        </motion.div>
+      ))}
+    </motion.div>
   );
 }
 
 function NotificationsPanel({ notifications }) {
   return (
-    <div className="application-list">
+    <motion.div className="application-list" variants={revealStagger} initial="hidden" animate="show">
       {notifications.map((notification) => (
-        <article className="application-row" key={notification.title}>
+        <motion.article className="application-row" key={notification.title} variants={revealUp} whileHover={{ y: -2 }}>
           <div>
             <strong>{notification.title}</strong>
             <p>{notification.description}</p>
@@ -1115,9 +1218,9 @@ function NotificationsPanel({ notifications }) {
           <div className="application-side">
             <span className="status-pill">{notification.time}</span>
           </div>
-        </article>
+        </motion.article>
       ))}
-    </div>
+    </motion.div>
   );
 }
 

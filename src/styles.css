@@ -1528,9 +1528,9 @@ input[type="number"] {
 }
 
 .sidebar-nav-item {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 14px;
   padding: 13px 12px;
   border-radius: 14px;
   color: #4a4752;
@@ -1540,7 +1540,22 @@ input[type="number"] {
 
 .sidebar-nav-item.active {
   color: var(--brand);
+}
+
+.sidebar-nav-pill {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
   background: #ffe6db;
+  z-index: 0;
+}
+
+.sidebar-nav-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .nav-glyph {
@@ -1718,6 +1733,7 @@ input[type="number"] {
   }
 
   .bottom-tab-item {
+    position: relative;
     display: grid;
     justify-items: center;
     gap: 4px;
@@ -1726,6 +1742,15 @@ input[type="number"] {
     color: #66616d;
     font-size: 0.66rem;
     font-weight: 600;
+  }
+
+  .bottom-tab-dot {
+    position: absolute;
+    top: -2px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--brand);
   }
 
   .bottom-tab-item.active {
