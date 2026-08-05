@@ -62,18 +62,8 @@ function DashboardPage({ session, onLogout }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [applications, setApplications] = useState([]);
   const [expertRequests, setExpertRequests] = useState([]);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(min-width: 981px)").matches
-  );
+  const [menuOpen, setMenuOpen] = useState(false);
   const isPoppingPanelRef = useRef(false);
-
-  useEffect(() => {
-    const query = window.matchMedia("(min-width: 981px)");
-    const handleChange = (event) => setIsDesktop(event.matches);
-    query.addEventListener("change", handleChange);
-    return () => query.removeEventListener("change", handleChange);
-  }, []);
 
   useEffect(() => {
     // Panel switches (home -> compare -> product, etc.) never touch the URL,
@@ -102,21 +92,17 @@ function DashboardPage({ session, onLogout }) {
   }
 
   useEffect(() => {
-    if (!sidebarOpen || isDesktop) return undefined;
+    if (!menuOpen) return undefined;
 
     function handleKeyDown(event) {
       if (event.key === "Escape") {
-        setSidebarOpen(false);
+        setMenuOpen(false);
       }
     }
 
     document.addEventListener("keydown", handleKeyDown);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
-    };
-  }, [sidebarOpen, isDesktop]);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [menuOpen]);
 
   const applicationsKey = `moneyplus-applications-${session.mobile}`;
   const expertsKey = `moneyplus-expert-requests-${session.mobile}`;
@@ -308,17 +294,31 @@ function DashboardPage({ session, onLogout }) {
 
   return (
     <main className="dashboard-shell">
-      <div className="dashboard-frame">
-        <motion.header className="topbar" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-          {isDesktop ? null : (
-            <button className="menu-button" type="button" aria-label="Open menu" onClick={() => setSidebarOpen(true)}>
-              <span />
-              <span />
-              <span />
-            </button>
-          )}
+      <motion.header className="dashboard-navbar" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+        <div className="dashboard-navbar-inner">
           <Logo />
-          <div className="topbar-actions">
+
+          <nav className="dashboard-navbar-links" aria-label="Primary">
+            {navItems.map((item) => (
+              <button
+                className={activeNavPanel === item.panel ? "active" : ""}
+                type="button"
+                key={item.title}
+                onClick={() => setActivePanel(item.panel)}
+              >
+                {item.title}
+                {activeNavPanel === item.panel ? (
+                  <motion.span
+                    className="dashboard-nav-underline"
+                    layoutId="dashboardNavUnderline"
+                    transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                  />
+                ) : null}
+              </button>
+            ))}
+          </nav>
+
+          <div className="dashboard-navbar-actions">
             <motion.button
               className="bell-button"
               type="button"
@@ -330,9 +330,49 @@ function DashboardPage({ session, onLogout }) {
               <BellIcon />
               <strong>3</strong>
             </motion.button>
+            <button
+              className={`dashboard-navbar-toggle ${menuOpen ? "open" : ""}`}
+              type="button"
+              aria-label="Toggle menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((current) => !current)}
+            >
+              <span />
+              <span />
+              <span />
+            </button>
           </div>
-        </motion.header>
+        </div>
 
+        <AnimatePresence>
+          {menuOpen ? (
+            <motion.nav
+              className="dashboard-navbar-mobile"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              aria-label="Mobile"
+            >
+              {navItems.map((item) => (
+                <button
+                  className={activeNavPanel === item.panel ? "active" : ""}
+                  type="button"
+                  key={item.title}
+                  onClick={() => {
+                    setActivePanel(item.panel);
+                    setMenuOpen(false);
+                  }}
+                >
+                  {item.title}
+                </button>
+              ))}
+            </motion.nav>
+          ) : null}
+        </AnimatePresence>
+      </motion.header>
+
+      <div className="dashboard-frame">
         <motion.section className="welcome-block" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}>
           <h1>
             Hello, {data.user.first_name}! <span>{"\u{1F44B}"}</span>
@@ -523,67 +563,6 @@ function DashboardPage({ session, onLogout }) {
         )}
         </AnimatePresence>
       </div>
-
-      <nav className="bottom-tab-bar">
-        {navItems.map((item, index) => (
-          <button
-            className={`bottom-tab-item ${activeNavPanel === item.panel ? "active" : ""}`}
-            type="button"
-            key={item.title}
-            onClick={() => setActivePanel(item.panel)}
-          >
-            {activeNavPanel === item.panel ? (
-              <motion.span
-                className="bottom-tab-dot"
-                layoutId="bottomTabDot"
-                transition={{ type: "spring", stiffness: 420, damping: 32 }}
-              />
-            ) : null}
-            <span className={`nav-glyph glyph-${index + 1}`} />
-            {item.title}
-          </button>
-        ))}
-      </nav>
-
-      {isDesktop ? null : (
-        <div className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`} onClick={() => setSidebarOpen(false)} />
-      )}
-
-      <aside className={`sidebar ${sidebarOpen || isDesktop ? "open" : ""}`} aria-hidden={!(sidebarOpen || isDesktop)}>
-        <div className="sidebar-header">
-          <Logo />
-          {isDesktop ? null : (
-            <button className="sidebar-close" type="button" aria-label="Close menu" onClick={() => setSidebarOpen(false)}>
-              {"✕"}
-            </button>
-          )}
-        </div>
-        <nav className="sidebar-nav">
-          {navItems.map((item, index) => (
-            <button
-              className={`sidebar-nav-item ${activeNavPanel === item.panel ? "active" : ""}`}
-              type="button"
-              key={item.title}
-              onClick={() => {
-                setActivePanel(item.panel);
-                setSidebarOpen(false);
-              }}
-            >
-              {activeNavPanel === item.panel ? (
-                <motion.span
-                  className="sidebar-nav-pill"
-                  layoutId="sidebarNavPill"
-                  transition={{ type: "spring", stiffness: 420, damping: 32 }}
-                />
-              ) : null}
-              <span className="sidebar-nav-content">
-                <span className={`nav-glyph glyph-${index + 1}`} />
-                {item.title}
-              </span>
-            </button>
-          ))}
-        </nav>
-      </aside>
     </main>
   );
 }
