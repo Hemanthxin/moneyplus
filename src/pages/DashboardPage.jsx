@@ -663,17 +663,23 @@ function ApplicationsPanel({ applications, onOpenProduct }) {
   );
 }
 
+const offerCardVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.94 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 120, damping: 16 } },
+  hover: { y: -6, scale: 1.02, transition: { duration: 0.2, ease: "easeOut" } },
+};
+
 function OffersPanel({ products, onOpenProduct }) {
   return (
-    <motion.div className="offer-grid" variants={revealStagger} initial="hidden" animate="show">
+    <motion.div className="offer-grid" variants={revealStagger} initial="hidden" whileInView="show" viewport={revealViewport}>
       {products.slice(0, 6).map((product) => (
         <motion.button
           className="offer-card"
           type="button"
           key={product.rank}
           onClick={() => onOpenProduct(product)}
-          variants={revealUp}
-          whileHover={{ y: -4 }}
+          variants={offerCardVariants}
+          whileHover="hover"
           whileTap={{ scale: 0.98 }}
           style={productOfferArtMap[product.title] ? { backgroundImage: `url(${productOfferArtMap[product.title]})` } : undefined}
         >
@@ -696,9 +702,9 @@ function OffersPanel({ products, onOpenProduct }) {
             <p>{product.subtitle}</p>
             <span className="offer-card-pill">{product.features[0]}</span>
           </div>
-          <span className="offer-card-arrow" aria-hidden="true">
+          <motion.span className="offer-card-arrow" aria-hidden="true" variants={{ hover: { x: 3 } }}>
             →
-          </span>
+          </motion.span>
         </motion.button>
       ))}
     </motion.div>
