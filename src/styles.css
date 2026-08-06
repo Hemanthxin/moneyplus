@@ -699,13 +699,13 @@ input[type="number"] {
 }
 
 .dashboard-navbar-inner {
-  width: min(100%, 1360px);
+  width: min(100%, 1400px);
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  padding: 14px 20px;
+  padding: 14px 12px;
 }
 
 .dashboard-navbar-left {
@@ -924,8 +924,8 @@ input[type="number"] {
   .dashboard-hero + .welcome-block {
     position: absolute;
     top: 0;
-    right: clamp(24px, 4vw, 56px);
-    left: auto;
+    left: clamp(24px, 4vw, 56px);
+    right: auto;
     z-index: 2;
     max-width: 360px;
     padding: 16px 20px;
@@ -934,6 +934,15 @@ input[type="number"] {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 14px 30px rgba(20, 20, 20, 0.08);
+  }
+
+  .dashboard-hero + .welcome-block p,
+  .dashboard-hero + .welcome-block h1 span {
+    display: none;
+  }
+
+  .dashboard-hero + .welcome-block h1 {
+    margin: 0;
   }
 }
 
