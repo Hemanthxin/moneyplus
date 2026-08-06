@@ -853,6 +853,7 @@ input[type="number"] {
 
 .welcome-block {
   padding: 20px 8px 10px;
+  scroll-margin-top: 90px;
 }
 
 .welcome-block h1 {
@@ -1176,6 +1177,7 @@ input[type="number"] {
 .services-section,
 .why-choose-section {
   margin-top: 20px;
+  scroll-margin-top: 90px;
 }
 
 .services-grid {

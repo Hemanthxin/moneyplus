@@ -10,12 +10,14 @@ import FaqSection from "../components/marketing/FaqSection";
 import MarketingFooter from "../components/marketing/MarketingFooter";
 
 const navItems = [
-  { title: "Home", panel: "home" },
-  { title: "Offers", panel: "offers" },
-  { title: "Calculators", panel: "calculators" },
-  { title: "Applications", panel: "applications" },
-  { title: "Profile", panel: "profile" },
+  { title: "Home", id: "home-top" },
+  { title: "Offers", id: "offers-section" },
+  { title: "Calculators", id: "calculators-section" },
+  { title: "Applications", id: "applications-section" },
+  { title: "Profile", id: "profile-section" },
 ];
+
+const sectionIds = navItems.map((item) => item.id);
 
 const productArtMap = {
   "Personal Loan": "moneybag",
@@ -61,7 +63,9 @@ function DashboardPage({ session, onLogout }) {
   const [applications, setApplications] = useState([]);
   const [expertRequests, setExpertRequests] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home-top");
   const isPoppingPanelRef = useRef(false);
+  const pendingSectionRef = useRef(null);
 
   useEffect(() => {
     // Panel switches (home -> compare -> product, etc.) never touch the URL,
@@ -101,6 +105,63 @@ function DashboardPage({ session, onLogout }) {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [menuOpen]);
+
+  useEffect(() => {
+    if (activePanel !== "home") return undefined;
+
+    const elements = sectionIds.map((id) => document.getElementById(id)).filter(Boolean);
+    if (!elements.length) return undefined;
+
+    const SCROLLSPY_OFFSET = 110;
+
+    function handleScroll() {
+      let current = elements[0].id;
+      for (const element of elements) {
+        if (element.getBoundingClientRect().top - SCROLLSPY_OFFSET <= 0) {
+          current = element.id;
+        }
+      }
+      // A programmatic scrollToSection() call already set the intended
+      // target optimistically. Ignore readings until the page actually
+      // settles on that target — otherwise a transient layout-shift scroll
+      // event fired while the outgoing panel unmounts (which briefly reads
+      // as "home-top") clobbers the deliberate destination before the real
+      // smooth-scroll animation even starts.
+      if (pendingSectionRef.current && pendingSectionRef.current !== current) {
+        return;
+      }
+      pendingSectionRef.current = null;
+      setActiveSection(current);
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [activePanel, data]);
+
+  function scrollToSection(id) {
+    setMenuOpen(false);
+    setActiveSection(id);
+    pendingSectionRef.current = id;
+    if (activePanel !== "home") {
+      setActivePanel("home");
+      // AnimatePresence (mode="wait") keeps the outgoing detail panel mounted
+      // until its exit transition finishes, so the home sections aren't in
+      // the DOM yet on the next tick. Poll briefly until the target appears.
+      let attempts = 0;
+      const tryScroll = () => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else if (attempts < 20) {
+          attempts += 1;
+          setTimeout(tryScroll, 30);
+        }
+      };
+      setTimeout(tryScroll, 30);
+      return;
+    }
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   const applicationsKey = `moneyplus-applications-${session.mobile}`;
   const expertsKey = `moneyplus-expert-requests-${session.mobile}`;
@@ -156,8 +217,6 @@ function DashboardPage({ session, onLogout }) {
       : "Timely repayments and lower credit utilization can improve your approval odds.";
   }, [data]);
 
-  const activeNavPanel = navItems.some((item) => item.panel === activePanel) ? activePanel : "home";
-  const recentApplications = applications.slice(0, 3);
 
   if (loading) {
     return <div className="loading-screen">Loading your dashboard...</div>;
@@ -198,7 +257,7 @@ function DashboardPage({ session, onLogout }) {
     };
 
     setApplications((current) => [record, ...current]);
-    setActivePanel("applications");
+    scrollToSection("applications-section");
   }
 
   function saveExpertRequest(form) {
@@ -214,35 +273,6 @@ function DashboardPage({ session, onLogout }) {
 
   function renderWorkspace() {
     switch (activePanel) {
-      case "applications":
-        return (
-          <WorkspacePanel title="My Applications" subtitle="Track every application and continue any pending loan journey.">
-            <ApplicationsPanel applications={applications} onOpenProduct={openProductPanel} />
-          </WorkspacePanel>
-        );
-      case "offers":
-        return (
-          <WorkspacePanel title="Recommended Offers" subtitle="Latest partner products based on your dashboard profile.">
-            <OffersPanel products={data.products} onOpenProduct={openProductPanel} />
-          </WorkspacePanel>
-        );
-      case "profile":
-        return (
-          <WorkspacePanel title="My Profile" subtitle="View your account and contact details.">
-            <ProfilePanel
-              user={data.user}
-              notifications={notifications}
-              onLogout={onLogout}
-              onOpenPanel={setActivePanel}
-            />
-          </WorkspacePanel>
-        );
-      case "calculators":
-        return (
-          <WorkspacePanel title="Calculators" subtitle="Plan your loan before you apply.">
-            <CalculatorsPanel onTalkToExpert={() => setActivePanel("expert")} />
-          </WorkspacePanel>
-        );
       case "credit":
         return (
           <WorkspacePanel title="Credit Score Details" subtitle="Review your score range, lending impact, and practical next steps.">
@@ -299,13 +329,13 @@ function DashboardPage({ session, onLogout }) {
           <nav className="dashboard-navbar-links" aria-label="Primary">
             {navItems.map((item) => (
               <button
-                className={activeNavPanel === item.panel ? "active" : ""}
+                className={activePanel === "home" && activeSection === item.id ? "active" : ""}
                 type="button"
                 key={item.title}
-                onClick={() => setActivePanel(item.panel)}
+                onClick={() => scrollToSection(item.id)}
               >
                 {item.title}
-                {activeNavPanel === item.panel ? (
+                {activePanel === "home" && activeSection === item.id ? (
                   <motion.span
                     className="dashboard-nav-underline"
                     layoutId="dashboardNavUnderline"
@@ -354,13 +384,10 @@ function DashboardPage({ session, onLogout }) {
             >
               {navItems.map((item) => (
                 <button
-                  className={activeNavPanel === item.panel ? "active" : ""}
+                  className={activePanel === "home" && activeSection === item.id ? "active" : ""}
                   type="button"
                   key={item.title}
-                  onClick={() => {
-                    setActivePanel(item.panel);
-                    setMenuOpen(false);
-                  }}
+                  onClick={() => scrollToSection(item.id)}
                 >
                   {item.title}
                 </button>
@@ -371,7 +398,7 @@ function DashboardPage({ session, onLogout }) {
       </motion.header>
 
       <div className="dashboard-frame">
-        <motion.section className="welcome-block" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}>
+        <motion.section id="home-top" className="welcome-block" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}>
           <h1>
             Hello, {data.user.first_name}! <span>{"\u{1F44B}"}</span>
           </h1>
@@ -391,8 +418,8 @@ function DashboardPage({ session, onLogout }) {
               className="promo-banner panel"
               role="button"
               tabIndex={0}
-              onClick={() => setActivePanel("offers")}
-              onKeyDown={(event) => event.key === "Enter" && setActivePanel("offers")}
+              onClick={() => scrollToSection("offers-section")}
+              onKeyDown={(event) => event.key === "Enter" && scrollToSection("offers-section")}
               variants={revealUp}
               initial="hidden"
               whileInView="show"
@@ -437,6 +464,21 @@ function DashboardPage({ session, onLogout }) {
             </motion.section>
 
             <motion.section
+              id="offers-section"
+              className="services-section"
+              variants={revealUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={revealViewport}
+            >
+              <div className="workspace-header">
+                <h2>Recommended Offers</h2>
+                <p>Latest partner products based on your dashboard profile.</p>
+              </div>
+              <OffersPanel products={data.products} onOpenProduct={openProductPanel} />
+            </motion.section>
+
+            <motion.section
               className="credit-cta panel"
               variants={revealUp}
               initial="hidden"
@@ -455,54 +497,51 @@ function DashboardPage({ session, onLogout }) {
               </button>
             </motion.section>
 
-            <WhyChooseSection />
-
             <motion.section
-              className="activity-grid"
+              id="calculators-section"
+              className="services-section"
               variants={revealUp}
               initial="hidden"
               whileInView="show"
               viewport={revealViewport}
             >
-              <article className="panel recent-card">
-                <div className="section-heading">
-                  <h2>Recent Activity</h2>
-                  <button className="inline-link" type="button" onClick={() => setActivePanel("applications")}>
-                    View all
-                  </button>
-                </div>
-                {recentApplications.length ? (
-                  <div className="mini-list">
-                    {recentApplications.map((application) => (
-                      <div className="mini-row" key={application.id}>
-                        <div>
-                          <strong>{application.productTitle}</strong>
-                          <p>{application.city}</p>
-                        </div>
-                        <span className="status-pill">{application.status}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="empty-copy">No applications yet. Open any service to begin.</p>
-                )}
-              </article>
+              <div className="workspace-header">
+                <h2>Calculators</h2>
+                <p>Plan your loan before you apply.</p>
+              </div>
+              <CalculatorsPanel onTalkToExpert={() => setActivePanel("expert")} />
+            </motion.section>
 
-              <article className="panel recent-card">
-                <div className="section-heading">
-                  <h2>Smart Shortcuts</h2>
-                </div>
-                <div className="shortcut-grid">
-                  <button className="shortcut-card" type="button" onClick={() => setActivePanel("calculators")}>
-                    <strong>Calculators</strong>
-                    <span>Check eligibility and estimate EMI</span>
-                  </button>
-                  <button className="shortcut-card" type="button" onClick={() => setActivePanel("expert")}>
-                    <strong>Book Expert Call</strong>
-                    <span>Ask for personal guidance</span>
-                  </button>
-                </div>
-              </article>
+            <WhyChooseSection />
+
+            <motion.section
+              id="applications-section"
+              className="services-section"
+              variants={revealUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={revealViewport}
+            >
+              <div className="workspace-header">
+                <h2>My Applications</h2>
+                <p>Track every application and continue any pending loan journey.</p>
+              </div>
+              <ApplicationsPanel applications={applications} onOpenProduct={openProductPanel} />
+            </motion.section>
+
+            <motion.section
+              id="profile-section"
+              className="services-section"
+              variants={revealUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={revealViewport}
+            >
+              <div className="workspace-header">
+                <h2>My Profile</h2>
+                <p>View your account and contact details.</p>
+              </div>
+              <ProfilePanel user={data.user} notifications={notifications} onLogout={onLogout} onOpenPanel={setActivePanel} />
             </motion.section>
 
             <motion.section
