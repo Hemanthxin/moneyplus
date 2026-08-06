@@ -22,26 +22,28 @@ export const productAccentMap = {
   "FD / RD": "accent-pink",
 };
 
-// Hand-placed positions (percent of the orbit container) so the layout reads
-// as a radial spread around the central hub, mirroring a 3-top / 2-per-side /
-// 2-bottom ring rather than a perfect trig circle (which crowds the poles).
-// Cards are a fixed 250px wide, so the centered slot uses calc() to center
-// exactly - deliberately avoiding `transform` for positioning, since these
-// cards are also `motion.button`s with their own whileHover/whileTap scale
-// transforms, and framer-motion owns the `transform` style once one is
-// present, silently dropping any translate() set via a plain style string.
-export const ORBIT_CARD_WIDTH = 250;
+export const productOrbitOrder = [
+  "Personal Loan",
+  "Business Loan",
+  "Home Loan",
+  "Car Loan",
+  "Term Insurance",
+  "FD Credit Card",
+  "Gold Loan",
+  "FD / RD",
+];
+
+export const ORBIT_CARD_WIDTH = 244;
 
 export const productOrbitPositions = {
-  "Personal Loan": { top: "2%", left: "2%" },
-  "Business Loan": { top: "0%", left: `calc(50% - ${ORBIT_CARD_WIDTH / 2}px)` },
-  "Home Loan": { top: "2%", right: "2%" },
-  "Car Loan": { top: "36%", left: "0%" },
-  "Health Insurance": { top: "66%", left: "3%" },
-  "Term Insurance": { top: "36%", right: "0%" },
-  "FD Credit Card": { top: "66%", right: "3%" },
-  "Gold Loan": { top: "78%", left: "18%" },
-  "FD / RD": { top: "78%", right: "18%" },
+  "Personal Loan": { top: "4%", left: "3%", rotate: "-3deg", tabSide: "left" },
+  "Business Loan": { top: "0.8%", left: `calc(50% - ${ORBIT_CARD_WIDTH / 2}px)`, rotate: "0deg", tabSide: "left" },
+  "Home Loan": { top: "4%", right: "3%", rotate: "3deg", tabSide: "right" },
+  "Car Loan": { top: "31.5%", left: "0.5%", rotate: "0deg", tabSide: "left" },
+  "Term Insurance": { top: "31.5%", right: "0.5%", rotate: "0deg", tabSide: "right" },
+  "FD Credit Card": { top: "61.5%", left: "0.8%", rotate: "0deg", tabSide: "left" },
+  "Gold Loan": { top: "76%", left: `calc(50% - ${ORBIT_CARD_WIDTH / 2}px)`, rotate: "0deg", tabSide: "left" },
+  "FD / RD": { top: "61.5%", right: "0.8%", rotate: "0deg", tabSide: "right" },
 };
 
 export function findRateFeature(features) {
