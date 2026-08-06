@@ -360,27 +360,29 @@ function DashboardPage({ session, onLogout }) {
     <main className="dashboard-shell">
       <motion.header className="dashboard-navbar" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
         <div className="dashboard-navbar-inner">
-          <Logo />
+          <div className="dashboard-navbar-left">
+            <Logo />
 
-          <nav className="dashboard-navbar-links" aria-label="Primary">
-            {navItems.map((item) => (
-              <button
-                className={activePanel === "home" && activeSection === item.id ? "active" : ""}
-                type="button"
-                key={item.title}
-                onClick={() => scrollToSection(item.id)}
-              >
-                {item.title}
-                {activePanel === "home" && activeSection === item.id ? (
-                  <motion.span
-                    className="dashboard-nav-underline"
-                    layoutId="dashboardNavUnderline"
-                    transition={{ type: "spring", stiffness: 420, damping: 32 }}
-                  />
-                ) : null}
-              </button>
-            ))}
-          </nav>
+            <nav className="dashboard-navbar-links" aria-label="Primary">
+              {navItems.map((item) => (
+                <button
+                  className={activePanel === "home" && activeSection === item.id ? "active" : ""}
+                  type="button"
+                  key={item.title}
+                  onClick={() => scrollToSection(item.id)}
+                >
+                  {item.title}
+                  {activePanel === "home" && activeSection === item.id ? (
+                    <motion.span
+                      className="dashboard-nav-underline"
+                      layoutId="dashboardNavUnderline"
+                      transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                    />
+                  ) : null}
+                </button>
+              ))}
+            </nav>
+          </div>
 
           <div className="dashboard-navbar-actions">
             <motion.button

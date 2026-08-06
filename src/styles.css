@@ -708,6 +708,13 @@ input[type="number"] {
   padding: 14px 20px;
 }
 
+.dashboard-navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  min-width: 0;
+}
+
 .dashboard-navbar-links {
   display: none;
   align-items: center;
@@ -916,12 +923,13 @@ input[type="number"] {
 
   .dashboard-hero + .welcome-block {
     position: absolute;
-    top: clamp(20px, 4vw, 48px);
-    left: clamp(24px, 4vw, 56px);
+    top: 0;
+    right: clamp(24px, 4vw, 56px);
+    left: auto;
     z-index: 2;
     max-width: 360px;
     padding: 16px 20px;
-    border-radius: 18px;
+    border-radius: 0 0 18px 18px;
     background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
