@@ -398,6 +398,12 @@ function DashboardPage({ session, onLogout }) {
         </AnimatePresence>
       </motion.header>
 
+      {activePanel === "home" ? (
+        <section className="dashboard-hero">
+          <img src={dashboardHeroImage} alt="Welcome back to MoneyPlus" />
+        </section>
+      ) : null}
+
       <div className="dashboard-frame">
         <motion.section id="home-top" className="welcome-block" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}>
           <h1>
@@ -415,10 +421,6 @@ function DashboardPage({ session, onLogout }) {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           >
-            <section className="dashboard-hero">
-              <img src={dashboardHeroImage} alt="Welcome back to MoneyPlus" />
-            </section>
-
             <motion.section
               className="promo-banner panel"
               role="button"
