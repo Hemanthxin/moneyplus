@@ -11,6 +11,7 @@ import MarketingFooter from "../components/marketing/MarketingFooter";
 import dashboardHeroImage from "../assets/dashboard-hero.jpg";
 import promoBannerBg from "../assets/ChatGPT Image Aug 6, 2026, 05_13_43 PM.png";
 import ServicesOrbit from "../components/dashboard/ServicesOrbit";
+import { productOfferArtMap, productOfferIconMap } from "../productMeta";
 
 const navItems = [
   { title: "Home", id: "home-top" },
@@ -476,9 +477,7 @@ function DashboardPage({ session, onLogout }) {
               initial="hidden"
               whileInView="show"
               viewport={revealViewport}
-              style={{
-                backgroundImage: `linear-gradient(90deg, rgba(255,110,53,0.96) 0%, rgba(255,88,45,0.88) 30%, rgba(255,75,47,0.55) 62%, rgba(255,75,47,0.32) 100%), url(${promoBannerBg})`,
-              }}
+              style={{ backgroundImage: `url(${promoBannerBg})` }}
             >
               <div className="promo-copy">
                 <strong>Compare. Choose. Save.</strong>
@@ -676,10 +675,30 @@ function OffersPanel({ products, onOpenProduct }) {
           variants={revealUp}
           whileHover={{ y: -4 }}
           whileTap={{ scale: 0.98 }}
+          style={productOfferArtMap[product.title] ? { backgroundImage: `url(${productOfferArtMap[product.title]})` } : undefined}
         >
-          <strong>{product.title}</strong>
-          <p>{product.subtitle}</p>
-          <span>{product.features[0]}</span>
+          <span className="offer-card-dots" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+          </span>
+          <span className="offer-card-icon">
+            <MiniIcon kind={productOfferIconMap[product.title] || "star"} />
+          </span>
+          <div className="offer-card-body">
+            <strong>{product.title}</strong>
+            <p>{product.subtitle}</p>
+            <span className="offer-card-pill">{product.features[0]}</span>
+          </div>
+          <span className="offer-card-arrow" aria-hidden="true">
+            →
+          </span>
         </motion.button>
       ))}
     </motion.div>

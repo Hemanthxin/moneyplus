@@ -242,6 +242,12 @@ function MiniIcon({ kind }) {
     star: <path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" strokeLinejoin="round" />,
     chevron: <path d="m9 18 6-6-6-6" />,
     chat: <path d="M4 5h16v11H8l-4 4z" />,
+    user: <><circle cx="12" cy="8" r="3.6" /><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7" /></>,
+    briefcase: <><rect x="3" y="8" width="18" height="11" rx="2" /><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18" /></>,
+    home: <path d="M4 11 12 4l8 7M6 10v9h12v-9" />,
+    car: <><path d="M4 16v-3.5L6 8h12l2 4.5V16M4 16h16M7 16v2M17 16v2" /><circle cx="7.5" cy="16" r="1.4" /><circle cx="16.5" cy="16" r="1.4" /></>,
+    "health-plus": <><path d="M12 4c2.4 1.6 4.8 1.6 4.8 1.6v4.8c0 4-2.4 6-4.8 7.2-2.4-1.2-4.8-3.2-4.8-7.2V5.6S9.6 5.6 12 4z" /><path d="M12 9v4M10 11h4" /></>,
+    umbrella: <><path d="M12 3c4.4 0 8 3.2 8 7H4c0-3.8 3.6-7 8-7zM12 10v9a2 2 0 0 1-3 1.7" /></>,
   };
 
   return (

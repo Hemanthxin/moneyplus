@@ -1,3 +1,28 @@
+import offerPersonalLoanArt from "./assets/Screenshot 2026-08-06 173025.png";
+import offerBusinessLoanArt from "./assets/Screenshot 2026-08-06 173032.png";
+import offerHomeLoanArt from "./assets/Screenshot 2026-08-06 173039.png";
+import offerCarLoanArt from "./assets/Screenshot 2026-08-06 173044.png";
+import offerHealthInsuranceArt from "./assets/Screenshot 2026-08-06 173049.png";
+import offerTermInsuranceArt from "./assets/Screenshot 2026-08-06 173055.png";
+
+export const productOfferArtMap = {
+  "Personal Loan": offerPersonalLoanArt,
+  "Business Loan": offerBusinessLoanArt,
+  "Home Loan": offerHomeLoanArt,
+  "Car Loan": offerCarLoanArt,
+  "Health Insurance": offerHealthInsuranceArt,
+  "Term Insurance": offerTermInsuranceArt,
+};
+
+export const productOfferIconMap = {
+  "Personal Loan": "user",
+  "Business Loan": "briefcase",
+  "Home Loan": "home",
+  "Car Loan": "car",
+  "Health Insurance": "health-plus",
+  "Term Insurance": "umbrella",
+};
+
 export const productArtMap = {
   "Personal Loan": "user-loan",
   "Business Loan": "business",
