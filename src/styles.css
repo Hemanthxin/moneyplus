@@ -1437,16 +1437,14 @@ input[type="number"] {
 
 .promo-copy strong {
   display: block;
-  color: white;
+  color: #1c1a20;
   font-size: 1.28rem;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
 }
 
 .promo-copy p {
   margin: 8px 0 0;
-  color: rgba(255, 255, 255, 0.92);
+  color: #423d47;
   max-width: 32ch;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.24);
 }
 
 .promo-art {
