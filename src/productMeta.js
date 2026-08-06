@@ -1,5 +1,5 @@
 export const productArtMap = {
-  "Personal Loan": "moneybag",
+  "Personal Loan": "user-loan",
   "Business Loan": "business",
   "Home Loan": "home",
   "Car Loan": "car",
@@ -33,17 +33,17 @@ export const productOrbitOrder = [
   "FD / RD",
 ];
 
-export const ORBIT_CARD_WIDTH = 244;
+export const ORBIT_CARD_WIDTH = 226;
 
 export const productOrbitPositions = {
-  "Personal Loan": { top: "4%", left: "3%", rotate: "-3deg", tabSide: "left" },
-  "Business Loan": { top: "0.8%", left: `calc(50% - ${ORBIT_CARD_WIDTH / 2}px)`, rotate: "0deg", tabSide: "left" },
-  "Home Loan": { top: "4%", right: "3%", rotate: "3deg", tabSide: "right" },
-  "Car Loan": { top: "31.5%", left: "0.5%", rotate: "0deg", tabSide: "left" },
-  "Term Insurance": { top: "31.5%", right: "0.5%", rotate: "0deg", tabSide: "right" },
-  "FD Credit Card": { top: "61.5%", left: "0.8%", rotate: "0deg", tabSide: "left" },
-  "Gold Loan": { top: "76%", left: `calc(50% - ${ORBIT_CARD_WIDTH / 2}px)`, rotate: "0deg", tabSide: "left" },
-  "FD / RD": { top: "61.5%", right: "0.8%", rotate: "0deg", tabSide: "right" },
+  "Personal Loan": { top: "4%", left: "2.2%", rotate: "-4deg", tabSide: "left" },
+  "Business Loan": { top: "2%", left: `calc(50% - ${ORBIT_CARD_WIDTH / 2}px)`, rotate: "0deg", tabSide: "left" },
+  "Home Loan": { top: "4%", right: "2.2%", rotate: "4deg", tabSide: "right" },
+  "Car Loan": { top: "31.5%", left: "0.6%", rotate: "-0.5deg", tabSide: "left" },
+  "Term Insurance": { top: "31.5%", right: "0.6%", rotate: "0.5deg", tabSide: "right" },
+  "FD Credit Card": { top: "62.8%", left: "0.8%", rotate: "-0.7deg", tabSide: "left" },
+  "Gold Loan": { top: "78%", left: `calc(50% - ${ORBIT_CARD_WIDTH / 2}px)`, rotate: "0deg", tabSide: "left" },
+  "FD / RD": { top: "62.8%", right: "0.8%", rotate: "0.7deg", tabSide: "right" },
 };
 
 export function findRateFeature(features) {

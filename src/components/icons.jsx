@@ -161,6 +161,27 @@ function Illustration({ kind }) {
           <circle cx="96" cy="20" r="8" fill="#f8be42" />
         </svg>
       );
+    case "user-loan":
+      return (
+        <svg viewBox="0 0 120 90" className="illustration">
+          <defs>
+            <linearGradient id="userLoanBody" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#62a2ff" />
+              <stop offset="100%" stopColor="#2f73ff" />
+            </linearGradient>
+            <linearGradient id="userLoanCoin" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#ffc65a" />
+              <stop offset="100%" stopColor="#ff9d2f" />
+            </linearGradient>
+          </defs>
+          <circle cx="54" cy="32" r="16" fill="url(#userLoanBody)" />
+          <path d="M26 72c3-16 15-25 28-25s25 9 28 25H26z" fill="url(#userLoanBody)" />
+          <path d="M41 59c4 3 8 4 13 4 4 0 8-1 12-4" fill="none" stroke="#9bc1ff" strokeWidth="4" strokeLinecap="round" />
+          <circle cx="87" cy="54" r="13" fill="url(#userLoanCoin)" />
+          <path d="M82 54h10M87 49v10" stroke="#fff6d8" strokeWidth="3.8" strokeLinecap="round" />
+          <circle cx="76" cy="62" r="5" fill="#70a1ff" />
+        </svg>
+      );
     case "wallet":
       return (
         <svg viewBox="0 0 120 90" className="illustration">

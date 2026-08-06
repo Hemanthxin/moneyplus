@@ -143,6 +143,8 @@ function ServicesOrbit({ products, onSelect }) {
               whileHover={{ y: -6, scale: 1.015 }}
               whileTap={{ scale: 0.98 }}
             >
+              <span className="orbit-card-accent-glow" aria-hidden="true" />
+              <span className="orbit-card-accent-block" aria-hidden="true" />
               <span className="orbit-card-icon">
                 <Illustration kind={productArtMap[product.title] || "moneybag"} />
               </span>
