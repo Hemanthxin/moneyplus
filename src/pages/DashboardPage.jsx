@@ -9,6 +9,7 @@ import TestimonialsSection from "../components/marketing/TestimonialsSection";
 import FaqSection from "../components/marketing/FaqSection";
 import MarketingFooter from "../components/marketing/MarketingFooter";
 import dashboardHeroImage from "../assets/dashboard-hero.jpg";
+import ServicesOrbit from "../components/dashboard/ServicesOrbit";
 
 const navItems = [
   { title: "Home", id: "home-top" },
@@ -18,35 +19,6 @@ const navItems = [
 ];
 
 const sectionIds = navItems.map((item) => item.id);
-
-const productArtMap = {
-  "Personal Loan": "moneybag",
-  "Business Loan": "business",
-  "Home Loan": "home",
-  "Car Loan": "car",
-  "Health Insurance": "health",
-  "Term Insurance": "shield",
-  "FD Credit Card": "card",
-  "Gold Loan": "gold",
-  "FD / RD": "piggy",
-};
-
-const productAccentMap = {
-  "Personal Loan": "accent-blue",
-  "Business Loan": "accent-emerald",
-  "Home Loan": "accent-violet",
-  "Car Loan": "accent-orange",
-  "Health Insurance": "accent-teal",
-  "Term Insurance": "accent-green",
-  "FD Credit Card": "accent-indigo",
-  "Gold Loan": "accent-gold",
-  "FD / RD": "accent-pink",
-};
-
-function findRateFeature(features) {
-  if (!features?.length) return null;
-  return features.find((feature) => /%|interest|rate/i.test(feature)) || features[0];
-}
 
 const notifications = [
   { title: "Profile Complete", description: "Your account details are saved and ready to go.", time: "Today" },
@@ -523,33 +495,7 @@ function DashboardPage({ session, onLogout }) {
               <div className="section-heading">
                 <h2>Our Services</h2>
               </div>
-              <div className="services-grid">
-                {data.products.map((product) => {
-                  const rateFeature = findRateFeature(product.features);
-                  return (
-                    <motion.button
-                      className={`service-tile ${productAccentMap[product.title] || "accent-blue"}`}
-                      type="button"
-                      key={product.rank}
-                      onClick={() => openProductPanel(product)}
-                      whileHover={{ y: -4 }}
-                      whileTap={{ scale: 0.97 }}
-                    >
-                      <span className={`service-icon ${productArtMap[product.title] || "moneybag"}`}>
-                        <Illustration kind={productArtMap[product.title] || "moneybag"} />
-                      </span>
-                      <span className="service-tile-body">
-                        <strong>{product.title}</strong>
-                        {product.subtitle ? <span className="service-tile-subtitle">{product.subtitle}</span> : null}
-                        {rateFeature ? <span className="service-tile-rate">{rateFeature}</span> : null}
-                      </span>
-                      <span className="service-tile-arrow" aria-hidden="true">
-                        →
-                      </span>
-                    </motion.button>
-                  );
-                })}
-              </div>
+              <ServicesOrbit products={data.products} onSelect={openProductPanel} />
             </motion.section>
 
             <motion.section
