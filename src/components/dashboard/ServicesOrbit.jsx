@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Illustration } from "../icons";
 import { productArtMap, productAccentMap, productOrbitOrder, productOrbitPositions, findRateFeature } from "../../productMeta";
@@ -22,8 +22,10 @@ function OrbitHub() {
 }
 
 function ServicesOrbit({ products, onSelect }) {
-  const orbitProducts = productOrbitOrder.map((title) => products.find((product) => product.title === title)).filter(Boolean);
-  const displayedProducts = orbitProducts.length ? orbitProducts : products;
+  const displayedProducts = useMemo(() => {
+    const orbitProducts = productOrbitOrder.map((title) => products.find((product) => product.title === title)).filter(Boolean);
+    return orbitProducts.length ? orbitProducts : products;
+  }, [products]);
   const containerRef = useRef(null);
   const hubRef = useRef(null);
   const cardRefs = useRef({});
