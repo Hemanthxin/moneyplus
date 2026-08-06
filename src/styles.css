@@ -1336,6 +1336,9 @@ input[type="number"] {
   padding: 22px 24px;
   margin-top: 16px;
   background: linear-gradient(135deg, #ff7a3d 0%, #ff4b2f 100%);
+  background-size: cover;
+  background-position: right center;
+  background-repeat: no-repeat;
   cursor: pointer;
   overflow: hidden;
 }

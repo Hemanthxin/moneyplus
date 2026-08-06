@@ -9,6 +9,7 @@ import TestimonialsSection from "../components/marketing/TestimonialsSection";
 import FaqSection from "../components/marketing/FaqSection";
 import MarketingFooter from "../components/marketing/MarketingFooter";
 import dashboardHeroImage from "../assets/dashboard-hero.jpg";
+import promoBannerBg from "../assets/ChatGPT Image Aug 6, 2026, 05_13_43 PM.png";
 import ServicesOrbit from "../components/dashboard/ServicesOrbit";
 
 const navItems = [
@@ -475,6 +476,9 @@ function DashboardPage({ session, onLogout }) {
               initial="hidden"
               whileInView="show"
               viewport={revealViewport}
+              style={{
+                backgroundImage: `linear-gradient(90deg, rgba(255,110,53,0.96) 0%, rgba(255,88,45,0.88) 30%, rgba(255,75,47,0.55) 62%, rgba(255,75,47,0.32) 100%), url(${promoBannerBg})`,
+              }}
             >
               <div className="promo-copy">
                 <strong>Compare. Choose. Save.</strong>
