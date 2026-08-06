@@ -1398,14 +1398,24 @@ input[type="number"] {
   border: 1px solid rgba(255, 134, 89, 0.16);
 }
 
+.result-card {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .result-card span {
-  color: #716b77;
+  color: #1c1a20;
 }
 
 .result-card strong {
   font-size: 2rem;
   margin-top: 10px;
-  color: var(--brand);
+  color: #1c1a20;
+}
+
+.result-card p {
+  color: #1c1a20;
 }
 
 .product-highlight p {

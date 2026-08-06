@@ -10,6 +10,8 @@ import FaqSection from "../components/marketing/FaqSection";
 import MarketingFooter from "../components/marketing/MarketingFooter";
 import dashboardHeroImage from "../assets/dashboard-hero.jpg";
 import promoBannerBg from "../assets/ChatGPT Image Aug 6, 2026, 05_13_43 PM.png";
+import eligibilityResultBg from "../assets/Screenshot 2026-08-06 175043.png";
+import emiResultBg from "../assets/Screenshot 2026-08-06 175049.png";
 import ServicesOrbit from "../components/dashboard/ServicesOrbit";
 import { productOfferArtMap, productOfferIconMap } from "../productMeta";
 
@@ -924,7 +926,7 @@ function EligibilityPanel() {
           <input value={form.tenureYears} inputMode="numeric" onChange={(event) => setForm((current) => ({ ...current, tenureYears: event.target.value.replace(/\D/g, "") }))} />
         </label>
       </div>
-      <div className="result-card">
+      <div className="result-card" style={{ backgroundImage: `url(${eligibilityResultBg})` }}>
         <span>Estimated Eligible Amount</span>
         <AnimatedCurrency value={eligibleAmount} />
         <p>This is a quick estimate for planning. Final approval depends on KYC, bureau, and lender policy.</p>
@@ -965,7 +967,7 @@ function EmiPanel() {
           <input value={form.tenureYears} inputMode="numeric" onChange={(event) => setForm((current) => ({ ...current, tenureYears: event.target.value.replace(/\D/g, "") }))} />
         </label>
       </div>
-      <div className="result-card">
+      <div className="result-card" style={{ backgroundImage: `url(${emiResultBg})` }}>
         <span>Estimated Monthly EMI</span>
         <AnimatedCurrency value={Math.round(emi || 0)} />
         <p>Total repayment planning becomes easier when you compare EMI with your existing monthly obligations.</p>
