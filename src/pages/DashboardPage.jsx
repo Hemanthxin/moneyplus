@@ -3,6 +3,11 @@ import { AnimatePresence, animate, motion, useInView } from "framer-motion";
 import { getDashboard, getOffers } from "../api/client";
 import { revealStagger, revealUp, revealViewport } from "../animations";
 import { BellIcon, Illustration, Logo, MiniIcon, ShieldBadge } from "../components/icons";
+import WhyChooseSection from "../components/marketing/WhyChooseSection";
+import HowItWorksSection from "../components/marketing/HowItWorksSection";
+import TestimonialsSection from "../components/marketing/TestimonialsSection";
+import FaqSection from "../components/marketing/FaqSection";
+import MarketingFooter from "../components/marketing/MarketingFooter";
 
 const navItems = [
   { title: "Home", panel: "home" },
@@ -10,13 +15,6 @@ const navItems = [
   { title: "Calculators", panel: "calculators" },
   { title: "Applications", panel: "applications" },
   { title: "Profile", panel: "profile" },
-];
-
-const whyChooseUs = [
-  { title: "Best Interest Rates", icon: "percent" },
-  { title: "Quick Approval", icon: "bolt" },
-  { title: "Minimal Documents", icon: "document" },
-  { title: "Flexible Repayment", icon: "calendar" },
 ];
 
 const productArtMap = {
@@ -457,27 +455,7 @@ function DashboardPage({ session, onLogout }) {
               </button>
             </motion.section>
 
-            <motion.section
-              className="why-choose-section"
-              variants={revealUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={revealViewport}
-            >
-              <div className="section-heading">
-                <h2>Why Choose MoneyPlus?</h2>
-              </div>
-              <div className="why-choose-grid">
-                {whyChooseUs.map((item) => (
-                  <motion.div className="why-choose-item" key={item.title} whileHover={{ y: -3 }}>
-                    <span className="why-choose-icon">
-                      <MiniIcon kind={item.icon} />
-                    </span>
-                    <span>{item.title}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.section>
+            <WhyChooseSection />
 
             <motion.section
               className="activity-grid"
@@ -549,6 +527,10 @@ function DashboardPage({ session, onLogout }) {
                 {"›"}
               </button>
             </motion.section>
+
+            <HowItWorksSection />
+            <TestimonialsSection />
+            <FaqSection />
           </motion.div>
         ) : (
           <motion.div
@@ -563,6 +545,8 @@ function DashboardPage({ session, onLogout }) {
         )}
         </AnimatePresence>
       </div>
+
+      {activePanel === "home" ? <MarketingFooter /> : null}
     </main>
   );
 }
