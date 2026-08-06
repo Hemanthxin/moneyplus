@@ -240,4 +240,39 @@ function ShieldBadge() {
   );
 }
 
-export { Logo, Illustration, MiniIcon, LockIcon, BellIcon, ShieldBadge };
+function ProfileAvatar() {
+  return (
+    <svg viewBox="0 0 44 44" fill="none" role="img" aria-label="Profile">
+      <defs>
+        <linearGradient id="avatarSphere" x1="10%" y1="0%" x2="90%" y2="100%">
+          <stop offset="0%" stopColor="#ff8a54" />
+          <stop offset="100%" stopColor="#ff4b2f" />
+        </linearGradient>
+        <radialGradient id="avatarGloss" cx="35%" cy="28%" r="55%">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.85)" />
+          <stop offset="55%" stopColor="rgba(255,255,255,0.12)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+        </radialGradient>
+      </defs>
+      <circle cx="22" cy="22" r="21" fill="url(#avatarSphere)" />
+      <circle cx="22" cy="22" r="21" fill="url(#avatarGloss)" />
+      <circle cx="22" cy="17.5" r="7" fill="rgba(255,255,255,0.92)" />
+      <path
+        d="M8.5 35.5C10.3 29.4 15.4 26 22 26s11.7 3.4 13.5 9.5C31.4 39 27 41 22 41s-9.4-2-13.5-5.5z"
+        fill="rgba(255,255,255,0.92)"
+      />
+    </svg>
+  );
+}
+
+function LogoutIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <path d="M16 17l5-5-5-5" />
+      <path d="M21 12H9" />
+    </svg>
+  );
+}
+
+export { Logo, Illustration, MiniIcon, LockIcon, BellIcon, ShieldBadge, ProfileAvatar, LogoutIcon };

@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, animate, motion, useInView } from "framer-motion";
-import { getDashboard, getOffers } from "../api/client";
+import { deleteAccount, getDashboard, getOffers } from "../api/client";
 import { revealStagger, revealUp, revealViewport } from "../animations";
-import { BellIcon, Illustration, Logo, MiniIcon, ShieldBadge } from "../components/icons";
+import { BellIcon, Illustration, Logo, LogoutIcon, MiniIcon, ProfileAvatar, ShieldBadge } from "../components/icons";
 import WhyChooseSection from "../components/marketing/WhyChooseSection";
 import HowItWorksSection from "../components/marketing/HowItWorksSection";
 import TestimonialsSection from "../components/marketing/TestimonialsSection";
@@ -15,7 +15,6 @@ const navItems = [
   { title: "Offers", id: "offers-section" },
   { title: "Calculators", id: "calculators-section" },
   { title: "Applications", id: "applications-section" },
-  { title: "Profile", id: "profile-section" },
 ];
 
 const sectionIds = navItems.map((item) => item.id);
@@ -31,6 +30,23 @@ const productArtMap = {
   "Gold Loan": "gold",
   "FD / RD": "piggy",
 };
+
+const productAccentMap = {
+  "Personal Loan": "accent-blue",
+  "Business Loan": "accent-emerald",
+  "Home Loan": "accent-violet",
+  "Car Loan": "accent-orange",
+  "Health Insurance": "accent-teal",
+  "Term Insurance": "accent-green",
+  "FD Credit Card": "accent-indigo",
+  "Gold Loan": "accent-gold",
+  "FD / RD": "accent-pink",
+};
+
+function findRateFeature(features) {
+  if (!features?.length) return null;
+  return features.find((feature) => /%|interest|rate/i.test(feature)) || features[0];
+}
 
 const notifications = [
   { title: "Profile Complete", description: "Your account details are saved and ready to go.", time: "Today" },
@@ -272,8 +288,27 @@ function DashboardPage({ session, onLogout }) {
     setExpertRequests((current) => [record, ...current]);
   }
 
+  async function handleDeleteAccount() {
+    await deleteAccount(session.mobile);
+    window.localStorage.removeItem(applicationsKey);
+    window.localStorage.removeItem(expertsKey);
+    onLogout();
+  }
+
   function renderWorkspace() {
     switch (activePanel) {
+      case "profile":
+        return (
+          <WorkspacePanel title="My Profile" subtitle="View your account and contact details.">
+            <ProfilePanel
+              user={data.user}
+              notifications={notifications}
+              onLogout={onLogout}
+              onOpenPanel={setActivePanel}
+              onDeleteAccount={handleDeleteAccount}
+            />
+          </WorkspacePanel>
+        );
       case "credit":
         return (
           <WorkspacePanel title="Credit Score Details" subtitle="Review your score range, lending impact, and practical next steps.">
@@ -359,6 +394,26 @@ function DashboardPage({ session, onLogout }) {
               <BellIcon />
               <strong>3</strong>
             </motion.button>
+            <motion.button
+              className="profile-avatar-button"
+              type="button"
+              aria-label="Open profile"
+              onClick={() => setActivePanel("profile")}
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.94 }}
+            >
+              <ProfileAvatar />
+            </motion.button>
+            <motion.button
+              className="logout-nav-button"
+              type="button"
+              onClick={onLogout}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <LogoutIcon />
+              <span>Logout</span>
+            </motion.button>
             <button
               className={`dashboard-navbar-toggle ${menuOpen ? "open" : ""}`}
               type="button"
@@ -393,25 +448,40 @@ function DashboardPage({ session, onLogout }) {
                   {item.title}
                 </button>
               ))}
+              <button
+                className={activePanel === "profile" ? "active" : ""}
+                type="button"
+                onClick={() => {
+                  setActivePanel("profile");
+                  setMenuOpen(false);
+                }}
+              >
+                Profile
+              </button>
+              <button type="button" onClick={onLogout}>
+                Logout
+              </button>
             </motion.nav>
           ) : null}
         </AnimatePresence>
       </motion.header>
 
-      {activePanel === "home" ? (
-        <section className="dashboard-hero">
-          <img src={dashboardHeroImage} alt="Welcome back to MoneyPlus" />
-        </section>
-      ) : null}
+      <div className="dashboard-hero-wrap">
+        {activePanel === "home" ? (
+          <section className="dashboard-hero">
+            <img src={dashboardHeroImage} alt="Welcome back to MoneyPlus" />
+          </section>
+        ) : null}
 
-      <div className="dashboard-frame">
         <motion.section id="home-top" className="welcome-block" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}>
           <h1>
             Hello, {data.user.first_name}! <span>{"\u{1F44B}"}</span>
           </h1>
           <p>Find the best financial solutions for you</p>
         </motion.section>
+      </div>
 
+      <div className="dashboard-frame">
         <AnimatePresence mode="wait">
         {activePanel === "home" ? (
           <motion.div
@@ -452,21 +522,31 @@ function DashboardPage({ session, onLogout }) {
                 <h2>Our Services</h2>
               </div>
               <div className="services-grid">
-                {data.products.map((product) => (
-                  <motion.button
-                    className="service-tile"
-                    type="button"
-                    key={product.rank}
-                    onClick={() => openProductPanel(product)}
-                    whileHover={{ y: -3 }}
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    <span className={`service-icon ${productArtMap[product.title] || "moneybag"}`}>
-                      <Illustration kind={productArtMap[product.title] || "moneybag"} />
-                    </span>
-                    <span>{product.title}</span>
-                  </motion.button>
-                ))}
+                {data.products.map((product) => {
+                  const rateFeature = findRateFeature(product.features);
+                  return (
+                    <motion.button
+                      className={`service-tile ${productAccentMap[product.title] || "accent-blue"}`}
+                      type="button"
+                      key={product.rank}
+                      onClick={() => openProductPanel(product)}
+                      whileHover={{ y: -4 }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      <span className={`service-icon ${productArtMap[product.title] || "moneybag"}`}>
+                        <Illustration kind={productArtMap[product.title] || "moneybag"} />
+                      </span>
+                      <span className="service-tile-body">
+                        <strong>{product.title}</strong>
+                        {product.subtitle ? <span className="service-tile-subtitle">{product.subtitle}</span> : null}
+                        {rateFeature ? <span className="service-tile-rate">{rateFeature}</span> : null}
+                      </span>
+                      <span className="service-tile-arrow" aria-hidden="true">
+                        →
+                      </span>
+                    </motion.button>
+                  );
+                })}
               </div>
             </motion.section>
 
@@ -534,21 +614,6 @@ function DashboardPage({ session, onLogout }) {
                 <p>Track every application and continue any pending loan journey.</p>
               </div>
               <ApplicationsPanel applications={applications} onOpenProduct={openProductPanel} />
-            </motion.section>
-
-            <motion.section
-              id="profile-section"
-              className="services-section"
-              variants={revealUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={revealViewport}
-            >
-              <div className="workspace-header">
-                <h2>My Profile</h2>
-                <p>View your account and contact details.</p>
-              </div>
-              <ProfilePanel user={data.user} notifications={notifications} onLogout={onLogout} onOpenPanel={setActivePanel} />
             </motion.section>
 
             <motion.section
@@ -669,13 +734,40 @@ function OffersPanel({ products, onOpenProduct }) {
   );
 }
 
-function ProfilePanel({ user, notifications, onLogout, onOpenPanel }) {
+function ProfilePanel({ user, notifications, onLogout, onOpenPanel, onDeleteAccount }) {
   const profileRows = [
     ["Full Name", `${user.first_name}${user.last_name ? ` ${user.last_name}` : ""}`],
     ["Mobile Number", user.mobile],
     ["Email", user.email || "Not available"],
     ["Role", user.role],
   ];
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+
+  const canConfirmDelete = confirmText === user.mobile;
+
+  function closeConfirm() {
+    if (deleting) return;
+    setConfirmOpen(false);
+    setConfirmText("");
+    setDeleteError("");
+  }
+
+  async function handleConfirmDelete(event) {
+    event.preventDefault();
+    if (!canConfirmDelete || deleting) return;
+    setDeleting(true);
+    setDeleteError("");
+    try {
+      await onDeleteAccount();
+    } catch (err) {
+      setDeleteError(err.message);
+      setDeleting(false);
+    }
+  }
 
   return (
     <div className="profile-shell">
@@ -702,6 +794,73 @@ function ProfilePanel({ user, notifications, onLogout, onOpenPanel }) {
           <span>Sign out of the dashboard</span>
         </motion.button>
       </motion.div>
+
+      <motion.div className="danger-zone" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+        <div className="danger-zone-header">
+          <strong>Danger Zone</strong>
+          <p>Actions here are permanent and cannot be undone.</p>
+        </div>
+        <div className="danger-zone-row">
+          <div>
+            <strong>Delete this account</strong>
+            <p>Permanently remove your MoneyPlus profile, credit score history, and application data from our servers.</p>
+          </div>
+          <button className="danger-button" type="button" onClick={() => setConfirmOpen(true)}>
+            Delete Account
+          </button>
+        </div>
+      </motion.div>
+
+      <AnimatePresence>
+        {confirmOpen ? (
+          <motion.div
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeConfirm}
+          >
+            <motion.form
+              className="modal-card danger-modal"
+              initial={{ opacity: 0, y: 20, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.96 }}
+              transition={{ duration: 0.2 }}
+              onClick={(event) => event.stopPropagation()}
+              onSubmit={handleConfirmDelete}
+            >
+              <h3>Delete your account?</h3>
+              <p>
+                This will permanently delete the <strong>{user.first_name}{user.last_name ? ` ${user.last_name}` : ""}</strong> account
+                and remove your profile, credit score history, and saved applications from our servers.{" "}
+                <strong>This action cannot be undone.</strong>
+              </p>
+              <label className="text-field">
+                <span>
+                  Type your mobile number <strong>{user.mobile}</strong> to confirm.
+                </span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={confirmText}
+                  onChange={(event) => setConfirmText(event.target.value.replace(/\D/g, "").slice(0, 10))}
+                  placeholder={user.mobile}
+                  autoFocus
+                />
+              </label>
+              {deleteError ? <p className="error-text">{deleteError}</p> : null}
+              <div className="form-actions">
+                <button className="secondary-button" type="button" onClick={closeConfirm} disabled={deleting}>
+                  Cancel
+                </button>
+                <button className="danger-button" type="submit" disabled={!canConfirmDelete || deleting}>
+                  {deleting ? "Deleting..." : "Permanently Delete Account"}
+                </button>
+              </div>
+            </motion.form>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }

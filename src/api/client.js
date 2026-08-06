@@ -79,3 +79,9 @@ export function getOffers({ product, amount, monthlyIncome }) {
   });
   return request(`/api/offers?${params.toString()}`);
 }
+
+export function deleteAccount(mobile) {
+  return request(`/api/account?mobile=${encodeURIComponent(mobile)}`, {
+    method: "DELETE",
+  });
+}
