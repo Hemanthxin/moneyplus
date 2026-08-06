@@ -8,6 +8,7 @@ import HowItWorksSection from "../components/marketing/HowItWorksSection";
 import TestimonialsSection from "../components/marketing/TestimonialsSection";
 import FaqSection from "../components/marketing/FaqSection";
 import MarketingFooter from "../components/marketing/MarketingFooter";
+import dashboardHeroImage from "../assets/dashboard-hero.jpg";
 
 const navItems = [
   { title: "Home", id: "home-top" },
@@ -414,6 +415,10 @@ function DashboardPage({ session, onLogout }) {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           >
+            <section className="dashboard-hero">
+              <img src={dashboardHeroImage} alt="Welcome back to MoneyPlus" />
+            </section>
+
             <motion.section
               className="promo-banner panel"
               role="button"
