@@ -865,13 +865,27 @@ function CalculatorsPanel({ onTalkToExpert }) {
   return (
     <motion.div className="calculators-shell" variants={revealStagger} initial="hidden" animate="show">
       <motion.div className="calculator-block" variants={revealUp}>
-        <h3>Eligibility Check</h3>
-        <p className="calculator-intro">Estimate how much you may qualify for before applying.</p>
+        <div className="calculator-block-header">
+          <span className="calculator-block-icon accent-eligibility">
+            <MiniIcon kind="gauge" />
+          </span>
+          <div>
+            <h3>Eligibility Check</h3>
+            <p className="calculator-intro">Estimate how much you may qualify for before applying.</p>
+          </div>
+        </div>
         <EligibilityPanel />
       </motion.div>
       <motion.div className="calculator-block" variants={revealUp}>
-        <h3>EMI Calculator</h3>
-        <p className="calculator-intro">Plan your monthly outflow before you submit a loan application.</p>
+        <div className="calculator-block-header">
+          <span className="calculator-block-icon accent-emi">
+            <MiniIcon kind="calculator" />
+          </span>
+          <div>
+            <h3>EMI Calculator</h3>
+            <p className="calculator-intro">Plan your monthly outflow before you submit a loan application.</p>
+          </div>
+        </div>
         <EmiPanel />
       </motion.div>
       <motion.div className="calculator-cta" variants={revealUp}>
@@ -884,6 +898,43 @@ function CalculatorsPanel({ onTalkToExpert }) {
         </button>
       </motion.div>
     </motion.div>
+  );
+}
+
+function AffixField({ label, prefix, suffix, value, onChange, inputMode = "numeric" }) {
+  return (
+    <label className="text-field">
+      <span>{label}</span>
+      <span className={`field-affix${prefix ? " has-prefix" : ""}${suffix ? " has-suffix" : ""}`}>
+        {prefix ? <span className="field-affix-mark">{prefix}</span> : null}
+        <input value={value} inputMode={inputMode} onChange={onChange} />
+        {suffix ? <span className="field-affix-mark field-affix-suffix">{suffix}</span> : null}
+      </span>
+    </label>
+  );
+}
+
+function RangeField({ label, suffix, value, onChange, min, max, step, textValue, onTextChange }) {
+  const numericValue = Number(value || min);
+  const pct = ((numericValue - min) / (max - min)) * 100;
+  return (
+    <div className="text-field">
+      <span>{label}</span>
+      <span className="field-affix has-suffix">
+        <input value={textValue} inputMode={step < 1 ? "decimal" : "numeric"} onChange={onTextChange} />
+        <span className="field-affix-mark field-affix-suffix">{suffix}</span>
+      </span>
+      <input
+        type="range"
+        className="range-slider"
+        min={min}
+        max={max}
+        step={step}
+        value={numericValue}
+        onChange={onChange}
+        style={{ background: `linear-gradient(90deg, var(--brand) ${pct}%, #eee9e6 ${pct}%)` }}
+      />
+    </div>
   );
 }
 
@@ -903,6 +954,11 @@ function EligibilityPanel() {
     return Math.max(0, (income - obligations) * multiplier * Math.max(1, tenure / 10));
   }, [form]);
 
+  const income = Number(form.monthlyIncome || 0);
+  const obligations = Number(form.monthlyObligations || 0);
+  const capacityPct = income > 0 ? Math.max(0, Math.min(100, ((income - obligations) / income) * 100)) : 0;
+  const capacityLabel = capacityPct >= 60 ? "Strong" : capacityPct >= 35 ? "Moderate" : "Tight";
+
   return (
     <div className="tool-layout">
       <div className="tool-form">
@@ -913,23 +969,48 @@ function EligibilityPanel() {
             <option>Self Employed</option>
           </select>
         </label>
-        <label className="text-field">
-          <span>Monthly Income</span>
-          <input value={form.monthlyIncome} inputMode="numeric" onChange={(event) => setForm((current) => ({ ...current, monthlyIncome: event.target.value.replace(/\D/g, "") }))} />
-        </label>
-        <label className="text-field">
-          <span>Monthly Obligations</span>
-          <input value={form.monthlyObligations} inputMode="numeric" onChange={(event) => setForm((current) => ({ ...current, monthlyObligations: event.target.value.replace(/\D/g, "") }))} />
-        </label>
-        <label className="text-field">
-          <span>Preferred Tenure (Years)</span>
-          <input value={form.tenureYears} inputMode="numeric" onChange={(event) => setForm((current) => ({ ...current, tenureYears: event.target.value.replace(/\D/g, "") }))} />
-        </label>
+        <AffixField
+          label="Monthly Income"
+          prefix="₹"
+          value={form.monthlyIncome}
+          onChange={(event) => setForm((current) => ({ ...current, monthlyIncome: event.target.value.replace(/\D/g, "") }))}
+        />
+        <AffixField
+          label="Monthly Obligations"
+          prefix="₹"
+          value={form.monthlyObligations}
+          onChange={(event) => setForm((current) => ({ ...current, monthlyObligations: event.target.value.replace(/\D/g, "") }))}
+        />
+        <RangeField
+          label="Preferred Tenure (Years)"
+          suffix="yrs"
+          min={1}
+          max={30}
+          step={1}
+          textValue={form.tenureYears}
+          onTextChange={(event) => setForm((current) => ({ ...current, tenureYears: event.target.value.replace(/\D/g, "") }))}
+          value={form.tenureYears}
+          onChange={(event) => setForm((current) => ({ ...current, tenureYears: event.target.value }))}
+        />
       </div>
       <div className="result-card" style={{ backgroundImage: `url(${eligibilityResultBg})` }}>
         <span>Estimated Eligible Amount</span>
         <AnimatedCurrency value={eligibleAmount} />
         <p>This is a quick estimate for planning. Final approval depends on KYC, bureau, and lender policy.</p>
+        <div className="capacity-meter">
+          <div className="capacity-meter-top">
+            <span>Repayment Capacity</span>
+            <span className="capacity-meter-label">{capacityLabel}</span>
+          </div>
+          <div className="capacity-meter-track">
+            <motion.div
+              className="capacity-meter-fill"
+              initial={{ width: 0 }}
+              animate={{ width: `${capacityPct}%` }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -951,26 +1032,75 @@ function EmiPanel() {
     return (principal * rate * factor) / (factor - 1);
   }, [form]);
 
+  const principal = Number(form.principal || 0);
+  const months = Number(form.tenureYears || 0) * 12;
+  const totalPayment = emi * months;
+  const totalInterest = Math.max(0, totalPayment - principal);
+  const principalPct = totalPayment > 0 ? (principal / totalPayment) * 100 : 100;
+  const interestPct = 100 - principalPct;
+
   return (
     <div className="tool-layout">
       <div className="tool-form">
-        <label className="text-field">
-          <span>Loan Amount</span>
-          <input value={form.principal} inputMode="numeric" onChange={(event) => setForm((current) => ({ ...current, principal: event.target.value.replace(/\D/g, "") }))} />
-        </label>
-        <label className="text-field">
-          <span>Interest Rate (%)</span>
-          <input value={form.annualRate} inputMode="decimal" onChange={(event) => setForm((current) => ({ ...current, annualRate: event.target.value.replace(/[^0-9.]/g, "") }))} />
-        </label>
-        <label className="text-field">
-          <span>Tenure (Years)</span>
-          <input value={form.tenureYears} inputMode="numeric" onChange={(event) => setForm((current) => ({ ...current, tenureYears: event.target.value.replace(/\D/g, "") }))} />
-        </label>
+        <AffixField
+          label="Loan Amount"
+          prefix="₹"
+          value={form.principal}
+          onChange={(event) => setForm((current) => ({ ...current, principal: event.target.value.replace(/\D/g, "") }))}
+        />
+        <RangeField
+          label="Interest Rate (%)"
+          suffix="%"
+          min={5}
+          max={24}
+          step={0.1}
+          textValue={form.annualRate}
+          onTextChange={(event) => setForm((current) => ({ ...current, annualRate: event.target.value.replace(/[^0-9.]/g, "") }))}
+          value={form.annualRate}
+          onChange={(event) => setForm((current) => ({ ...current, annualRate: event.target.value }))}
+        />
+        <RangeField
+          label="Tenure (Years)"
+          suffix="yrs"
+          min={1}
+          max={30}
+          step={1}
+          textValue={form.tenureYears}
+          onTextChange={(event) => setForm((current) => ({ ...current, tenureYears: event.target.value.replace(/\D/g, "") }))}
+          value={form.tenureYears}
+          onChange={(event) => setForm((current) => ({ ...current, tenureYears: event.target.value }))}
+        />
       </div>
       <div className="result-card" style={{ backgroundImage: `url(${emiResultBg})` }}>
         <span>Estimated Monthly EMI</span>
         <AnimatedCurrency value={Math.round(emi || 0)} />
         <p>Total repayment planning becomes easier when you compare EMI with your existing monthly obligations.</p>
+        <div className="emi-breakdown">
+          <div className="emi-breakdown-track">
+            <motion.div
+              className="emi-breakdown-principal"
+              initial={{ width: 0 }}
+              animate={{ width: `${principalPct}%` }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            />
+            <motion.div
+              className="emi-breakdown-interest"
+              initial={{ width: 0 }}
+              animate={{ width: `${interestPct}%` }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            />
+          </div>
+          <div className="emi-breakdown-legend">
+            <span>
+              <i className="dot principal" />
+              Principal {formatCurrency(principal)}
+            </span>
+            <span>
+              <i className="dot interest" />
+              Interest {formatCurrency(Math.round(totalInterest))}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
