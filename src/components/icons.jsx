@@ -6,8 +6,8 @@ function Logo({ variant = "inline" }) {
       <svg className="brand-mark" viewBox="0 0 62 58" role="img" aria-label="MoneyPlus">
         <defs>
           <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#ff6d32" />
-            <stop offset="100%" stopColor="#ff3b2f" />
+            <stop offset="0%" style={{ stopColor: "var(--brand)" }} />
+            <stop offset="100%" style={{ stopColor: "var(--brand-deep)" }} />
           </linearGradient>
         </defs>
         <path

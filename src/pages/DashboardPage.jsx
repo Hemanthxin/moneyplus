@@ -12,7 +12,7 @@ import dashboardHeroImage from "../assets/dashboard-hero.jpg";
 import promoBannerBg from "../assets/ChatGPT Image Aug 6, 2026, 05_13_43 PM.png";
 import eligibilityResultBg from "../assets/Screenshot 2026-08-06 175043.png";
 import emiResultBg from "../assets/Screenshot 2026-08-06 175049.png";
-import ServicesOrbit from "../components/dashboard/ServicesOrbit";
+import ServicesStack from "../components/dashboard/ServicesStack";
 import { productOfferArtMap, productOfferIconMap } from "../productMeta";
 
 const navItems = [
@@ -500,7 +500,7 @@ function DashboardPage({ session, onLogout }) {
               <div className="section-heading">
                 <h2>Our Services</h2>
               </div>
-              <ServicesOrbit products={data.products} onSelect={openProductPanel} />
+              <ServicesStack products={data.products} onSelect={openProductPanel} />
             </motion.section>
 
             <motion.section

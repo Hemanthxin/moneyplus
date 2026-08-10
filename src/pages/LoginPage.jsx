@@ -15,6 +15,7 @@ import CtaBanner from "../components/marketing/CtaBanner";
 import MarketingFooter from "../components/marketing/MarketingFooter";
 import loginBgImage from "../assets/login-bg.jpg";
 import loginBgMobileImage from "../assets/login-bg-mobile.png";
+import heroIllustrationImage from "../assets/ChatGPT Image Aug 10, 2026, 11_33_15 AM.png";
 
 const onboardingSteps = [
   { key: "mobile", label: "Mobile" },
@@ -252,7 +253,7 @@ function LoginPage({ onAuthenticated }) {
   }
 
   return (
-    <>
+    <div className="login-page-theme">
       <MarketingNavbar />
 
       <main
@@ -313,6 +314,7 @@ function LoginPage({ onAuthenticated }) {
                 ))}
               </motion.div>
             </motion.div>
+            <img className="showcase-illustration" src={heroIllustrationImage} alt="" aria-hidden="true" />
           </div>
 
           <motion.div
@@ -383,7 +385,7 @@ function LoginPage({ onAuthenticated }) {
       <FaqSection />
       <CtaBanner />
       <MarketingFooter />
-    </>
+    </div>
   );
 }
 

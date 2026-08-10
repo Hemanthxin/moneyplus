@@ -58,19 +58,6 @@ export const productOrbitOrder = [
   "FD / RD",
 ];
 
-export const ORBIT_CARD_WIDTH = 226;
-
-export const productOrbitPositions = {
-  "Personal Loan": { top: "4%", left: "2.2%", rotate: "-4deg", tabSide: "left" },
-  "Business Loan": { top: "2%", left: `calc(50% - ${ORBIT_CARD_WIDTH / 2}px)`, rotate: "0deg", tabSide: "left" },
-  "Home Loan": { top: "4%", right: "2.2%", rotate: "4deg", tabSide: "right" },
-  "Car Loan": { top: "31.5%", left: "0.6%", rotate: "-0.5deg", tabSide: "left" },
-  "Term Insurance": { top: "31.5%", right: "0.6%", rotate: "0.5deg", tabSide: "right" },
-  "FD Credit Card": { top: "62.8%", left: "0.8%", rotate: "-0.7deg", tabSide: "left" },
-  "Gold Loan": { top: "78%", left: `calc(50% - ${ORBIT_CARD_WIDTH / 2}px)`, rotate: "0deg", tabSide: "left" },
-  "FD / RD": { top: "62.8%", right: "0.8%", rotate: "0.7deg", tabSide: "right" },
-};
-
 export function findRateFeature(features) {
   if (!features?.length) return null;
   return features.find((feature) => /%|interest|rate/i.test(feature)) || features[0];
