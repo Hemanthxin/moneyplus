@@ -70,7 +70,11 @@ a {
   place-items: center;
   padding: clamp(12px, 3vh, 28px);
   position: relative;
-  background: linear-gradient(160deg, #f2faf4 0%, #ffffff 55%, #f5f9f3 100%);
+  background-color: #fbfdfa;
+  background-image: var(--login-bg-desktop);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 .auth-scrim {
@@ -95,45 +99,11 @@ a {
   padding: 0 clamp(6px, 2vw, 22px);
 }
 
-.showcase-illustration {
-  display: none;
-}
-
-@media (min-width: 1280px) {
-  .auth-stage {
-    display: grid;
-    grid-template-columns: 1.3fr auto 480px;
-    align-items: center;
-  }
-
-  .auth-showcase {
-    padding: 0;
-  }
-
-  .showcase-illustration {
-    display: block;
-    justify-self: center;
-    width: 280px;
-    mix-blend-mode: multiply;
-  }
-
-  .auth-card {
-    width: 100%;
-    min-width: 0;
-  }
-}
-
 .showcase-panel {
   position: relative;
   z-index: 1;
   display: inline-block;
-  max-width: 600px;
-  padding: clamp(20px, 3vw, 30px) clamp(22px, 3vw, 32px);
-  border-radius: 28px;
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.05));
-  backdrop-filter: blur(16px) saturate(120%);
-  -webkit-backdrop-filter: blur(16px) saturate(120%);
-  box-shadow: 0 24px 60px rgba(15, 9, 5, 0.16);
+  max-width: 480px;
 }
 
 .auth-brand,
@@ -2310,6 +2280,9 @@ input[type="number"] {
 @media (max-width: 620px) {
   .auth-shell {
     padding: 0;
+    background-image: var(--login-bg-mobile);
+    background-size: cover;
+    background-position: center center;
   }
 
   .auth-stage {
