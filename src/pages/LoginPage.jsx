@@ -5,6 +5,7 @@ import { registerUser, sendOtp, verifyOtp } from "../api/client";
 import { authCardVariants, fadeUpItem, floatBlob, showcaseStagger, stepVariants } from "../animations";
 import { Logo, LockIcon, MiniIcon } from "../components/icons";
 import MarketingNavbar from "../components/marketing/MarketingNavbar";
+import LendingPartnersSection from "../components/marketing/LendingPartnersSection";
 import StatsSection from "../components/marketing/StatsSection";
 import ServicesSection from "../components/marketing/ServicesSection";
 import WhyChooseSection from "../components/marketing/WhyChooseSection";
@@ -24,9 +25,9 @@ const onboardingSteps = [
 ];
 
 const trustFeatures = [
-  { title: "Secure", subtitle: "100% Safe & Secure", icon: "shield" },
-  { title: "Fast", subtitle: "Quick Approvals", icon: "bolt" },
-  { title: "50K+", subtitle: "Happy Customers", icon: "people" },
+  { title: "Quick Approval", subtitle: "Get approved in minutes", icon: "bolt" },
+  { title: "Low Interest", subtitle: "Competitive rates you can trust", icon: "percent" },
+  { title: "Safe & Secure", subtitle: "Your data is 100% protected", icon: "shield" },
 ];
 
 function LoginPage({ onAuthenticated }) {
@@ -290,14 +291,19 @@ function LoginPage({ onAuthenticated }) {
                 <Logo />
               </motion.div>
 
+              <motion.div className="hero-eyebrow-row" variants={fadeUpItem}>
+                <span className="hero-eyebrow">Simple Loans, Better Lives</span>
+                <span className="hero-eyebrow-rule" aria-hidden="true" />
+              </motion.div>
+
               <motion.div className="hero-copy" variants={fadeUpItem}>
                 <h1>
-                  <span className="hero-line-primary">India&apos;s Smart</span>
+                  <span className="hero-line-primary">Smart Loans</span>
                   <br />
-                  <span className="hero-line-accent">Financial Partner</span>
+                  <span className="hero-line-accent">for Every Need</span>
                 </h1>
                 <span className="hero-rule" aria-hidden="true" />
-                <p>Smart Finance. Simplified for You.</p>
+                <p>MoneyPlus helps you achieve your dreams with fast, flexible and hassle-free loans.</p>
               </motion.div>
 
               <motion.div className="feature-row" aria-hidden="true" variants={fadeUpItem}>
@@ -313,9 +319,19 @@ function LoginPage({ onAuthenticated }) {
                   </div>
                 ))}
               </motion.div>
+
+              <motion.div className="trust-badge" variants={fadeUpItem}>
+                <span className="trust-badge-check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m5 13 4 4L19 7" />
+                  </svg>
+                </span>
+                Trusted by 50,000+ customers across India
+              </motion.div>
             </motion.div>
-            <img className="showcase-illustration" src={heroIllustrationImage} alt="" aria-hidden="true" />
           </div>
+
+          <img className="showcase-illustration" src={heroIllustrationImage} alt="" aria-hidden="true" />
 
           <motion.div
             className="auth-card"
@@ -377,6 +393,7 @@ function LoginPage({ onAuthenticated }) {
         </section>
       </main>
 
+      <LendingPartnersSection />
       <StatsSection />
       <ServicesSection />
       <WhyChooseSection />

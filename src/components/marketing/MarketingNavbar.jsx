@@ -3,11 +3,12 @@ import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion"
 import { Logo } from "../icons";
 
 const navLinks = [
-  { label: "Services", href: "#services" },
-  { label: "Why Us", href: "#why-us" },
+  { label: "Home", href: "#top" },
+  { label: "About Us", href: "#why-us" },
+  { label: "Loan Products", href: "#services" },
   { label: "How It Works", href: "#how-it-works" },
   { label: "Testimonials", href: "#testimonials" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Contact Us", href: "#faq" },
 ];
 
 function MarketingNavbar() {
@@ -37,13 +38,18 @@ function MarketingNavbar() {
           {navLinks.map((link) => (
             <a key={link.href} href={link.href}>
               {link.label}
+              {link.label === "Loan Products" ? (
+                <svg className="navbar-link-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              ) : null}
             </a>
           ))}
         </nav>
 
         <div className="marketing-navbar-actions">
           <a className="primary-button compact marketing-navbar-cta" href="#login-card">
-            Login
+            Apply Now
           </a>
           <button
             className={`marketing-navbar-toggle ${menuOpen ? "open" : ""}`}

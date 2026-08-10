@@ -4,9 +4,9 @@ import { revealStagger, revealUp } from "../../animations";
 
 const stats = [
   { value: 50000, prefix: "", suffix: "+", label: "Happy Customers" },
-  { value: 500, prefix: "₹", suffix: " Cr+", label: "Loans Disbursed" },
+  { value: 1200, prefix: "₹", suffix: " Cr+", label: "Loans Disbursed" },
   { value: 50, prefix: "", suffix: "+", label: "Lending Partners" },
-  { value: 9.99, prefix: "", suffix: "%", label: "Starting ROI", decimals: 2 },
+  { value: 8.5, prefix: "", suffix: "%", label: "Starting ROI", decimals: 2 },
 ];
 
 function StatTile({ stat }) {

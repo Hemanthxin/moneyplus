@@ -3,31 +3,12 @@ import React from "react";
 function Logo({ variant = "inline" }) {
   return (
     <div className={`brand-logo ${variant}`}>
-      <svg className="brand-mark" viewBox="0 0 62 58" role="img" aria-label="MoneyPlus">
-        <defs>
-          <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style={{ stopColor: "var(--brand)" }} />
-            <stop offset="100%" style={{ stopColor: "var(--brand-deep)" }} />
-          </linearGradient>
-        </defs>
-        <path
-          d="M12 42V13c0-3 3.5-4.6 5.7-2.7l14.8 12.7 14.3-12.8c2.2-2 5.7-.4 5.7 2.6v29"
-          fill="none"
-          stroke="url(#brandGradient)"
-          strokeWidth="8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path d="M44 17h13v8H44z" fill="#ffb800" rx="2" />
-        <path d="M48.5 12.5v17" stroke="#ffb800" strokeWidth="5" strokeLinecap="round" />
-      </svg>
-      <div className="brand-wordmark">
-        <div className="brand-title" aria-hidden="true">
-          <span className="brand-money">Money</span>
-          <span className="brand-plus">Plus</span>
-        </div>
-        <div className="brand-subtitle">ASSOCIATE</div>
-      </div>
+      <span className="brand-wordmark-plain">
+        moneyplus
+        <span className="brand-plus-badge" aria-hidden="true">
+          +
+        </span>
+      </span>
     </div>
   );
 }
