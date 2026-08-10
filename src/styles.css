@@ -70,11 +70,7 @@ a {
   place-items: center;
   padding: clamp(12px, 3vh, 28px);
   position: relative;
-  background-color: #fbfdfa;
-  background-image: var(--login-bg-desktop);
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
+  background: linear-gradient(160deg, #f2faf4 0%, #ffffff 55%, #f5f9f3 100%);
 }
 
 .auth-scrim {
@@ -97,6 +93,34 @@ a {
   flex: 1.15 1 0%;
   min-width: 0;
   padding: 0 clamp(6px, 2vw, 22px);
+}
+
+.showcase-illustration {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .auth-stage {
+    display: grid;
+    grid-template-columns: 1.3fr auto 480px;
+    align-items: center;
+  }
+
+  .auth-showcase {
+    padding: 0;
+  }
+
+  .showcase-illustration {
+    display: block;
+    justify-self: center;
+    width: 280px;
+    mix-blend-mode: multiply;
+  }
+
+  .auth-card {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 .showcase-panel {
@@ -140,7 +164,7 @@ a {
   font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #1c1a20;
+  color: var(--brand);
 }
 
 .brand-plus-badge {
@@ -237,14 +261,14 @@ a {
 
 .feature-icon {
   flex: none;
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
   display: grid;
   place-items: center;
-  background: rgba(255, 255, 255, 0.88);
+  background: var(--warm);
   color: var(--brand);
-  box-shadow: 0 10px 22px rgba(30, 18, 8, 0.18);
+  box-shadow: none;
 }
 
 .feature-icon svg {
@@ -2286,9 +2310,6 @@ input[type="number"] {
 @media (max-width: 620px) {
   .auth-shell {
     padding: 0;
-    background-image: var(--login-bg-mobile);
-    background-size: auto 170%;
-    background-position: center 62%;
   }
 
   .auth-stage {

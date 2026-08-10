@@ -7,7 +7,7 @@ const navLinks = [
   { label: "About Us", href: "#why-us" },
   { label: "Loan Products", href: "#services" },
   { label: "How It Works", href: "#how-it-works" },
-  { label: "Testimonials", href: "#testimonials" },
+  { label: "Blog", href: "#testimonials" },
   { label: "Contact Us", href: "#faq" },
 ];
 

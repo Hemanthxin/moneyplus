@@ -255,14 +255,7 @@ function LoginPage({ onAuthenticated }) {
     <div className="login-page-theme">
       <MarketingNavbar />
 
-      <main
-        className="auth-shell"
-        id="top"
-        style={{
-          "--login-bg-desktop": `url(${heroIllustrationImage})`,
-          "--login-bg-mobile": `url(${heroIllustrationImage})`,
-        }}
-      >
+      <main className="auth-shell" id="top">
         <div className="auth-scrim" />
         <motion.span
           className="auth-blob auth-blob-1"
@@ -324,10 +317,12 @@ function LoginPage({ onAuthenticated }) {
                     <path d="m5 13 4 4L19 7" />
                   </svg>
                 </span>
-                Trusted by 50,000+ customers across India
+                Trusted by 10,000+ customers across India
               </motion.div>
             </motion.div>
           </div>
+
+          <img className="showcase-illustration" src={heroIllustrationImage} alt="" aria-hidden="true" />
 
           <motion.div
             className="auth-card"
