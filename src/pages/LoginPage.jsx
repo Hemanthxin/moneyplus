@@ -14,8 +14,6 @@ import TestimonialsSection from "../components/marketing/TestimonialsSection";
 import FaqSection from "../components/marketing/FaqSection";
 import CtaBanner from "../components/marketing/CtaBanner";
 import MarketingFooter from "../components/marketing/MarketingFooter";
-import loginBgImage from "../assets/login-bg.jpg";
-import loginBgMobileImage from "../assets/login-bg-mobile.png";
 import heroIllustrationImage from "../assets/ChatGPT Image Aug 10, 2026, 11_33_15 AM.png";
 
 const onboardingSteps = [
@@ -261,8 +259,8 @@ function LoginPage({ onAuthenticated }) {
         className="auth-shell"
         id="top"
         style={{
-          "--login-bg-desktop": `url(${loginBgImage})`,
-          "--login-bg-mobile": `url(${loginBgMobileImage})`,
+          "--login-bg-desktop": `url(${heroIllustrationImage})`,
+          "--login-bg-mobile": `url(${heroIllustrationImage})`,
         }}
       >
         <div className="auth-scrim" />
@@ -330,8 +328,6 @@ function LoginPage({ onAuthenticated }) {
               </motion.div>
             </motion.div>
           </div>
-
-          <img className="showcase-illustration" src={heroIllustrationImage} alt="" aria-hidden="true" />
 
           <motion.div
             className="auth-card"
