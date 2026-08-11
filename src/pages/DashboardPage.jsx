@@ -18,8 +18,13 @@ import ServicesSection from "../components/marketing/ServicesSection";
 
 const navItems = [
   { title: "Home", id: "home-top" },
+  { title: "About Us", id: "why-us" },
+  { title: "Loan Products", id: "services" },
   { title: "Calculators", id: "calculators-section" },
   { title: "Applications", id: "applications-section" },
+  { title: "How It Works", id: "how-it-works" },
+  { title: "Blog", id: "testimonials" },
+  { title: "Contact Us", id: "faq" },
 ];
 
 const sectionIds = navItems.map((item) => item.id);
@@ -356,6 +361,11 @@ function DashboardPage({ session, onLogout }) {
                 onClick={() => scrollToSection(item.id)}
               >
                 {item.title}
+                {item.title === "Loan Products" ? (
+                  <svg className="navbar-link-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                ) : null}
                 {activePanel === "home" && activeSection === item.id ? (
                   <motion.span
                     className="dashboard-nav-underline"

@@ -740,6 +740,9 @@ input[type="number"] {
 
 .dashboard-navbar-links button {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   border: 0;
   background: transparent;
   padding: 8px 14px;
