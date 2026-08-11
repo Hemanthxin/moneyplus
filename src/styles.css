@@ -64,8 +64,15 @@ a {
   text-decoration: none;
 }
 
+.login-viewport {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .auth-shell {
-  min-height: 100vh;
+  flex: 1;
+  min-height: 0;
   display: grid;
   place-items: center;
   padding: clamp(12px, 3vh, 28px);
@@ -2291,7 +2298,6 @@ input[type="number"] {
     gap: 0;
     width: 100%;
     max-width: 100%;
-    min-height: 100vh;
   }
 
   .auth-showcase {
@@ -2507,5 +2513,83 @@ input[type="number"] {
 
 .primary-button:not(:disabled):hover {
   box-shadow: 0 18px 32px rgba(22, 163, 74, 0.34);
+}
+
+/* ===== Legal pages (Terms / Privacy / Grievance) ===== */
+
+.legal-page {
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.legal-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px clamp(18px, 4vw, 48px);
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.legal-page-brand {
+  display: inline-flex;
+}
+
+.legal-page-back {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.legal-page-back:hover {
+  color: var(--brand);
+}
+
+.legal-page-body {
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: clamp(32px, 6vw, 56px) clamp(18px, 4vw, 24px) 80px;
+}
+
+.legal-page-body h1 {
+  margin: 0;
+  font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+  color: var(--text);
+}
+
+.legal-page-updated {
+  margin: 8px 0 36px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.legal-page-body section {
+  margin-bottom: 32px;
+}
+
+.legal-page-body h2 {
+  margin: 0 0 10px;
+  font-size: 1.15rem;
+  color: var(--text);
+}
+
+.legal-page-body p {
+  margin: 0 0 12px;
+  color: #4a4650;
+  line-height: 1.7;
+}
+
+.legal-page-body ul {
+  margin: 0 0 12px;
+  padding-left: 20px;
+  color: #4a4650;
+  line-height: 1.7;
+}
+
+.legal-page-body li {
+  margin-bottom: 6px;
+}
+
+.legal-page-body a {
+  font-weight: 600;
 }
 

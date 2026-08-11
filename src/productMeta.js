@@ -14,15 +14,6 @@ export const productOfferArtMap = {
   "Term Insurance": offerTermInsuranceArt,
 };
 
-export const productOfferIconMap = {
-  "Personal Loan": "user",
-  "Business Loan": "briefcase",
-  "Home Loan": "home",
-  "Car Loan": "car",
-  "Health Insurance": "health-plus",
-  "Term Insurance": "umbrella",
-};
-
 export const productArtMap = {
   "Personal Loan": "user-loan",
   "Business Loan": "business",

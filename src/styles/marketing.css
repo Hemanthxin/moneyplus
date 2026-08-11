@@ -201,40 +201,49 @@
 
 .lending-partners-section {
   width: 100%;
+  flex: none;
   background: #f6f7f9;
   border-top: 1px solid var(--panel-border);
-  border-bottom: 1px solid var(--panel-border);
+  overflow: hidden;
 }
 
-.lending-partners-inner {
-  width: min(100%, 1180px);
-  margin: 0 auto;
-  padding: 22px clamp(18px, 4vw, 24px);
+.lending-partners-track {
+  width: 100%;
+  padding: 18px 0;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+}
+
+.lending-partners-marquee {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 14px 32px;
-}
-
-.lending-partners-label {
-  flex: none;
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--text);
-}
-
-.lending-partners-list {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px 32px;
+  gap: 48px;
+  width: max-content;
+  animation: lending-partners-scroll 26s linear infinite;
 }
 
 .lending-partner-name {
+  flex: none;
   color: var(--muted);
   font-weight: 600;
   font-size: 0.92rem;
   white-space: nowrap;
+}
+
+@keyframes lending-partners-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lending-partners-marquee {
+    animation: none;
+  }
 }
 
 /* ===== Stats strip ===== */
@@ -695,13 +704,24 @@
   gap: 10px;
 }
 
-.marketing-footer-column a {
+.marketing-footer-column a,
+.marketing-footer-link-button {
   color: #a39d97;
   font-size: 0.88rem;
   text-decoration: none;
 }
 
-.marketing-footer-column a:hover {
+.marketing-footer-link-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.marketing-footer-column a:hover,
+.marketing-footer-link-button:hover {
   color: #fff;
 }
 

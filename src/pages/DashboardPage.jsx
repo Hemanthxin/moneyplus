@@ -3,21 +3,21 @@ import { AnimatePresence, animate, motion, useInView } from "framer-motion";
 import { deleteAccount, getDashboard, getOffers } from "../api/client";
 import { revealStagger, revealUp, revealViewport } from "../animations";
 import { BellIcon, Illustration, Logo, LogoutIcon, MiniIcon, ProfileAvatar, ShieldBadge } from "../components/icons";
+import StatsSection from "../components/marketing/StatsSection";
 import WhyChooseSection from "../components/marketing/WhyChooseSection";
 import HowItWorksSection from "../components/marketing/HowItWorksSection";
 import TestimonialsSection from "../components/marketing/TestimonialsSection";
 import FaqSection from "../components/marketing/FaqSection";
+import CtaBanner from "../components/marketing/CtaBanner";
 import MarketingFooter from "../components/marketing/MarketingFooter";
 import dashboardHeroImage from "../assets/dashboard-hero.jpg";
 import promoBannerBg from "../assets/ChatGPT Image Aug 6, 2026, 05_13_43 PM.png";
 import eligibilityResultBg from "../assets/Screenshot 2026-08-06 175043.png";
 import emiResultBg from "../assets/Screenshot 2026-08-06 175049.png";
 import ServicesStack from "../components/dashboard/ServicesStack";
-import { productOfferArtMap, productOfferIconMap } from "../productMeta";
 
 const navItems = [
   { title: "Home", id: "home-top" },
-  { title: "Offers", id: "offers-section" },
   { title: "Calculators", id: "calculators-section" },
   { title: "Applications", id: "applications-section" },
 ];
@@ -229,6 +229,13 @@ function DashboardPage({ session, onLogout }) {
   function openProductPanel(product) {
     setSelectedProduct(product);
     setActivePanel("compare");
+  }
+
+  function openProductByTitle(title) {
+    const match =
+      data.products.find((product) => product.title === title) ||
+      data.products.find((product) => title === "Insurance" && product.title.includes("Insurance"));
+    openProductPanel(match || { title, subtitle: "", features: [] });
   }
 
   function saveApplication(form) {
@@ -473,8 +480,8 @@ function DashboardPage({ session, onLogout }) {
               className="promo-banner panel"
               role="button"
               tabIndex={0}
-              onClick={() => scrollToSection("offers-section")}
-              onKeyDown={(event) => event.key === "Enter" && scrollToSection("offers-section")}
+              onClick={() => scrollToSection("services-section")}
+              onKeyDown={(event) => event.key === "Enter" && scrollToSection("services-section")}
               variants={revealUp}
               initial="hidden"
               whileInView="show"
@@ -491,6 +498,7 @@ function DashboardPage({ session, onLogout }) {
             </motion.section>
 
             <motion.section
+              id="services-section"
               className="services-section"
               variants={revealUp}
               initial="hidden"
@@ -503,20 +511,7 @@ function DashboardPage({ session, onLogout }) {
               <ServicesStack products={data.products} onSelect={openProductPanel} />
             </motion.section>
 
-            <motion.section
-              id="offers-section"
-              className="services-section"
-              variants={revealUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={revealViewport}
-            >
-              <div className="workspace-header">
-                <h2>Recommended Offers</h2>
-                <p>Latest partner products based on your dashboard profile.</p>
-              </div>
-              <OffersPanel products={data.products} onOpenProduct={openProductPanel} />
-            </motion.section>
+            <StatsSection />
 
             <motion.section
               className="credit-cta panel"
@@ -595,6 +590,7 @@ function DashboardPage({ session, onLogout }) {
             <HowItWorksSection />
             <TestimonialsSection />
             <FaqSection />
+            <CtaBanner />
           </motion.div>
         ) : (
           <motion.div
@@ -610,7 +606,7 @@ function DashboardPage({ session, onLogout }) {
         </AnimatePresence>
       </div>
 
-      {activePanel === "home" ? <MarketingFooter /> : null}
+      {activePanel === "home" ? <MarketingFooter onProductClick={openProductByTitle} /> : null}
     </main>
   );
 }
@@ -660,54 +656,6 @@ function ApplicationsPanel({ applications, onOpenProduct }) {
             </button>
           </div>
         </motion.article>
-      ))}
-    </motion.div>
-  );
-}
-
-const offerCardVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.94 },
-  show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 120, damping: 16 } },
-  hover: { y: -6, scale: 1.02, transition: { duration: 0.2, ease: "easeOut" } },
-};
-
-function OffersPanel({ products, onOpenProduct }) {
-  return (
-    <motion.div className="offer-grid" variants={revealStagger} initial="hidden" whileInView="show" viewport={revealViewport}>
-      {products.slice(0, 6).map((product) => (
-        <motion.button
-          className="offer-card"
-          type="button"
-          key={product.rank}
-          onClick={() => onOpenProduct(product)}
-          variants={offerCardVariants}
-          whileHover="hover"
-          whileTap={{ scale: 0.98 }}
-          style={productOfferArtMap[product.title] ? { backgroundImage: `url(${productOfferArtMap[product.title]})` } : undefined}
-        >
-          <span className="offer-card-dots" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-          </span>
-          <span className="offer-card-icon">
-            <MiniIcon kind={productOfferIconMap[product.title] || "star"} />
-          </span>
-          <div className="offer-card-body">
-            <strong>{product.title}</strong>
-            <p>{product.subtitle}</p>
-            <span className="offer-card-pill">{product.features[0]}</span>
-          </div>
-          <motion.span className="offer-card-arrow" aria-hidden="true" variants={{ hover: { x: 3 } }}>
-            →
-          </motion.span>
-        </motion.button>
       ))}
     </motion.div>
   );

@@ -1,19 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { registerUser, sendOtp, verifyOtp } from "../api/client";
 import { authCardVariants, fadeUpItem, floatBlob, showcaseStagger, stepVariants } from "../animations";
 import { Logo, LockIcon, MiniIcon } from "../components/icons";
 import MarketingNavbar from "../components/marketing/MarketingNavbar";
 import LendingPartnersSection from "../components/marketing/LendingPartnersSection";
-import StatsSection from "../components/marketing/StatsSection";
-import ServicesSection from "../components/marketing/ServicesSection";
-import WhyChooseSection from "../components/marketing/WhyChooseSection";
-import HowItWorksSection from "../components/marketing/HowItWorksSection";
-import TestimonialsSection from "../components/marketing/TestimonialsSection";
-import FaqSection from "../components/marketing/FaqSection";
-import CtaBanner from "../components/marketing/CtaBanner";
-import MarketingFooter from "../components/marketing/MarketingFooter";
 import heroIllustrationImage from "../assets/ChatGPT Image Aug 10, 2026, 11_33_15 AM.png";
 
 const onboardingSteps = [
@@ -255,6 +247,7 @@ function LoginPage({ onAuthenticated }) {
     <div className="login-page-theme">
       <MarketingNavbar />
 
+      <div className="login-viewport">
       <main
         className="auth-shell"
         id="top"
@@ -383,21 +376,14 @@ function LoginPage({ onAuthenticated }) {
             </p>
 
             <p className="disclaimer">
-              By continuing, you agree to the <a href="#login-card">Privacy Policy</a> and <a href="#login-card">Terms of Use</a>.
+              By continuing, you agree to the <Link to="/privacy">Privacy Policy</Link> and <Link to="/terms">Terms of Use</Link>.
             </p>
           </motion.div>
         </section>
       </main>
 
       <LendingPartnersSection />
-      <StatsSection />
-      <ServicesSection />
-      <WhyChooseSection />
-      <HowItWorksSection />
-      <TestimonialsSection />
-      <FaqSection />
-      <CtaBanner />
-      <MarketingFooter />
+      </div>
     </div>
   );
 }
