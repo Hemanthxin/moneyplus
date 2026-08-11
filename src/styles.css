@@ -124,62 +124,29 @@ a {
   text-align: left;
 }
 
-.auth-brand .brand-wordmark-plain {
-  font-size: 1.3rem;
-}
-
-.brand-logo-image {
-  display: block;
-  width: 168px;
-  height: auto;
-}
-
-.brand-logo-image.compact {
-  width: 132px;
-  margin: 0 auto;
-}
-
 .brand-logo {
   display: inline-flex;
   align-items: center;
   line-height: 1;
 }
 
-.brand-wordmark-plain {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  font-size: 1.5rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--brand);
+.brand-logo-image {
+  display: block;
+  width: 116px;
+  height: auto;
 }
 
-.brand-plus-badge {
-  display: inline-grid;
-  place-items: center;
-  width: 0.62em;
-  height: 0.62em;
-  margin-left: 0.05em;
-  margin-top: -0.9em;
-  border-radius: 0.18em;
-  background: linear-gradient(160deg, var(--brand), var(--brand-deep));
-  color: #fff;
-  font-size: 0.7em;
-  font-weight: 900;
-  line-height: 1;
+.brand-logo.icon .brand-logo-image {
+  width: 44px;
 }
 
-.brand-logo.stacked {
-  flex-direction: column;
+.auth-brand .brand-logo-image {
+  width: 168px;
 }
 
-.brand-logo.stacked .brand-wordmark-plain {
-  font-size: clamp(1.02rem, 1.8vh, 1.35rem);
-}
-
-.brand-logo.inline .brand-wordmark-plain {
-  font-size: 1.02rem;
+.auth-card-header .brand-logo-image {
+  width: 132px;
+  margin: 0 auto;
 }
 
 .hero-copy {
@@ -908,10 +875,10 @@ input[type="number"] {
   display: none;
   align-items: center;
   gap: 6px;
-  border: 1px solid rgba(255, 127, 84, 0.34);
+  border: 1px solid rgba(22, 163, 74, 0.34);
   border-radius: 999px;
-  background: #fff7f3;
-  color: #a3271f;
+  background: #eafaf0;
+  color: var(--brand-deep);
   font-weight: 700;
   font-size: 0.86rem;
   padding: 0 14px;
@@ -1459,39 +1426,6 @@ input[type="number"] {
   border-radius: 20px;
   background: #fafafa;
   border: 1px dashed rgba(28, 26, 32, 0.16);
-}
-
-.promo-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 22px 24px;
-  margin-top: 16px;
-  background: linear-gradient(135deg, #ff7a3d 0%, #ff4b2f 100%);
-  background-size: cover;
-  background-position: right center;
-  background-repeat: no-repeat;
-  cursor: pointer;
-  overflow: hidden;
-}
-
-.promo-copy strong {
-  display: block;
-  color: #1c1a20;
-  font-size: 1.28rem;
-}
-
-.promo-copy p {
-  margin: 8px 0 0;
-  color: #423d47;
-  max-width: 32ch;
-}
-
-.promo-art {
-  flex: none;
-  width: 92px;
-  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.18));
 }
 
 .services-section,
@@ -2138,17 +2072,16 @@ input[type="number"] {
     text-align: left;
   }
 
-  .dashboard-navbar .brand-logo.inline .brand-wordmark-plain {
-    font-size: 0.9rem;
+  .dashboard-navbar .brand-logo.icon .brand-logo-image {
+    width: 38px;
   }
 }
 
 @media (max-width: 620px) {
   .auth-shell {
     padding: 0;
-    background-image: var(--login-bg-mobile);
-    background-size: cover;
-    background-position: center center;
+    background-image: none;
+    background-color: #fbfdfa;
   }
 
   .auth-stage {
@@ -2187,8 +2120,8 @@ input[type="number"] {
     justify-content: center;
   }
 
-  .auth-brand .brand-wordmark-plain {
-    font-size: 1.02rem;
+  .auth-brand .brand-logo-image {
+    width: 120px;
   }
 
   .hero-copy {
@@ -2292,8 +2225,8 @@ input[type="number"] {
     padding: 12px 0 12px 10px;
   }
 
-  .dashboard-navbar .brand-logo.inline .brand-wordmark-plain {
-    font-size: 0.82rem;
+  .dashboard-navbar .brand-logo.icon .brand-logo-image {
+    width: 34px;
   }
 
   .activity-grid {
@@ -2306,7 +2239,6 @@ input[type="number"] {
     padding: 0 8px;
   }
 
-  .promo-banner,
   .credit-cta {
     margin-left: 8px;
     margin-right: 8px;

@@ -1,14 +1,16 @@
 import React from "react";
+import moneyPlusLogoFull from "../assets/moneyplus-logo-full.png";
+import moneyPlusLogoIcon from "../assets/moneyplus-logo-icon.png";
 
 function Logo({ variant = "inline" }) {
+  const isIcon = variant === "icon";
   return (
     <div className={`brand-logo ${variant}`}>
-      <span className="brand-wordmark-plain">
-        moneyplus
-        <span className="brand-plus-badge" aria-hidden="true">
-          +
-        </span>
-      </span>
+      <img
+        className="brand-logo-image"
+        src={isIcon ? moneyPlusLogoIcon : moneyPlusLogoFull}
+        alt="MoneyPlus - Grow Your Wealth"
+      />
     </div>
   );
 }

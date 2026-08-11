@@ -21,7 +21,7 @@ function MarketingNavbar() {
     >
       <div className="marketing-navbar-inner">
         <a className="marketing-navbar-brand" href="#top">
-          <Logo />
+          <Logo variant="icon" />
         </a>
       </div>
     </motion.header>

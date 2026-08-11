@@ -676,8 +676,10 @@
   font-size: 0.92rem;
 }
 
-.marketing-footer-brand .brand-wordmark-plain {
-  color: #fff;
+.marketing-footer-brand .brand-logo-image {
+  background: #fff;
+  padding: 10px 14px;
+  border-radius: 14px;
 }
 
 .marketing-footer-socials {

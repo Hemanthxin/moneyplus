@@ -35,7 +35,7 @@ function MarketingFooter({ onProductClick }) {
     >
       <div className="marketing-footer-top">
         <div className="marketing-footer-brand">
-          <Logo variant="stacked" />
+          <Logo />
           <p>Smart Finance. Simplified for You.</p>
           <div className="marketing-footer-socials">
             {socials.map((social) => (

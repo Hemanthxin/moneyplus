@@ -11,7 +11,6 @@ import FaqSection from "../components/marketing/FaqSection";
 import CtaBanner from "../components/marketing/CtaBanner";
 import MarketingFooter from "../components/marketing/MarketingFooter";
 import dashboardHeroImage from "../assets/dashboard-hero.jpg";
-import promoBannerBg from "../assets/ChatGPT Image Aug 6, 2026, 05_13_43 PM.png";
 import eligibilityResultBg from "../assets/Screenshot 2026-08-06 175043.png";
 import emiResultBg from "../assets/Screenshot 2026-08-06 175049.png";
 import ServicesSection from "../components/marketing/ServicesSection";
@@ -349,7 +348,7 @@ function DashboardPage({ session, onLogout }) {
       <motion.header className="dashboard-navbar" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
         <div className="dashboard-navbar-inner">
           <div className="dashboard-navbar-brand">
-            <Logo />
+            <Logo variant="icon" />
           </div>
 
           <nav className="dashboard-navbar-links" aria-label="Primary">
@@ -487,24 +486,6 @@ function DashboardPage({ session, onLogout }) {
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           >
             <StatsSection />
-
-            <motion.section
-              className="promo-banner panel"
-              role="button"
-              tabIndex={0}
-              onClick={() => scrollToSection("services")}
-              onKeyDown={(event) => event.key === "Enter" && scrollToSection("services")}
-              variants={revealUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={revealViewport}
-              style={{ backgroundImage: `url(${promoBannerBg})` }}
-            >
-              <div className="promo-copy">
-                <strong>Compare. Choose. Save.</strong>
-                <p>Get the best loan offers from top banks &amp; NBFCs</p>
-              </div>
-            </motion.section>
 
             <ServicesSection products={data.products} onSelect={openProductPanel} />
 
