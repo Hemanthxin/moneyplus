@@ -7,7 +7,7 @@ function LendingPartnersSection() {
     <section className="lending-partners-section">
       <div className="lending-partners-track">
         <div className="lending-partners-marquee">
-          {[...partners, ...partners].map((partner, index) => (
+          {[...partners, ...partners, ...partners, ...partners, ...partners].map((partner, index) => (
             <span className="lending-partner-name" key={`${partner}-${index}`}>
               {partner}
             </span>

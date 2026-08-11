@@ -486,6 +486,8 @@ function DashboardPage({ session, onLogout }) {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           >
+            <StatsSection />
+
             <motion.section
               className="promo-banner panel"
               role="button"
@@ -508,8 +510,6 @@ function DashboardPage({ session, onLogout }) {
             </motion.section>
 
             <ServicesSection products={data.products} onSelect={openProductPanel} />
-
-            <StatsSection />
 
             <motion.section
               className="credit-cta panel"

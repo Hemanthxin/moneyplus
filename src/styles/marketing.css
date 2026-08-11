@@ -203,7 +203,6 @@
   width: 100%;
   flex: none;
   background: #f6f7f9;
-  border-top: 1px solid var(--panel-border);
   overflow: hidden;
 }
 
@@ -220,7 +219,7 @@
   align-items: center;
   gap: 48px;
   width: max-content;
-  animation: lending-partners-scroll 26s linear infinite;
+  animation: lending-partners-scroll 46s linear infinite;
 }
 
 .lending-partner-name {
@@ -236,7 +235,7 @@
     transform: translateX(0);
   }
   to {
-    transform: translateX(-50%);
+    transform: translateX(-20%);
   }
 }
 
