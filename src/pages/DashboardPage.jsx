@@ -14,7 +14,7 @@ import dashboardHeroImage from "../assets/dashboard-hero.jpg";
 import promoBannerBg from "../assets/ChatGPT Image Aug 6, 2026, 05_13_43 PM.png";
 import eligibilityResultBg from "../assets/Screenshot 2026-08-06 175043.png";
 import emiResultBg from "../assets/Screenshot 2026-08-06 175049.png";
-import ServicesStack from "../components/dashboard/ServicesStack";
+import ServicesSection from "../components/marketing/ServicesSection";
 
 const navItems = [
   { title: "Home", id: "home-top" },
@@ -480,8 +480,8 @@ function DashboardPage({ session, onLogout }) {
               className="promo-banner panel"
               role="button"
               tabIndex={0}
-              onClick={() => scrollToSection("services-section")}
-              onKeyDown={(event) => event.key === "Enter" && scrollToSection("services-section")}
+              onClick={() => scrollToSection("services")}
+              onKeyDown={(event) => event.key === "Enter" && scrollToSection("services")}
               variants={revealUp}
               initial="hidden"
               whileInView="show"
@@ -497,19 +497,7 @@ function DashboardPage({ session, onLogout }) {
               </div>
             </motion.section>
 
-            <motion.section
-              id="services-section"
-              className="services-section"
-              variants={revealUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={revealViewport}
-            >
-              <div className="section-heading">
-                <h2>Our Services</h2>
-              </div>
-              <ServicesStack products={data.products} onSelect={openProductPanel} />
-            </motion.section>
+            <ServicesSection products={data.products} onSelect={openProductPanel} />
 
             <StatsSection />
 

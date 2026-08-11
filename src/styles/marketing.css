@@ -311,7 +311,9 @@
   border: 1px solid var(--panel-border);
   box-shadow: var(--shadow);
   text-decoration: none;
+  text-align: left;
   color: inherit;
+  cursor: pointer;
   transition: box-shadow 0.2s ease;
 }
 

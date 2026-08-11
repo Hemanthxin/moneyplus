@@ -2,8 +2,9 @@ import React from "react";
 import { motion } from "framer-motion";
 import { revealStagger, revealUp, revealViewport } from "../../animations";
 import { Illustration } from "../icons";
+import { productArtMap } from "../../productMeta";
 
-const services = [
+const staticServices = [
   { title: "Personal Loan", art: "moneybag", description: "Instant funds for any need, rates starting 10.5% p.a." },
   { title: "Business Loan", art: "business", description: "Fuel your growth with collateral-free business funding." },
   { title: "Home Loan", art: "home", description: "Own your dream home with rates starting 8.5% p.a." },
@@ -15,7 +16,16 @@ const services = [
   { title: "FD / RD", art: "piggy", description: "Grow your savings safely with guaranteed returns." },
 ];
 
-function ServicesSection() {
+function ServicesSection({ products, onSelect }) {
+  const services =
+    products && products.length
+      ? products.map((product) => ({
+          title: product.title,
+          art: productArtMap[product.title] || "moneybag",
+          description: product.subtitle,
+        }))
+      : staticServices;
+
   return (
     <section className="marketing-section services-marketing-section" id="services">
       <div className="marketing-section-heading">
@@ -31,24 +41,30 @@ function ServicesSection() {
         whileInView="show"
         viewport={revealViewport}
       >
-        {services.map((service) => (
-          <motion.a
-            className="marketing-service-card"
-            href="#login-card"
-            key={service.title}
-            variants={revealUp}
-            whileHover={{ y: -6 }}
-          >
-            <span className="marketing-service-icon">
-              <Illustration kind={service.art} />
-            </span>
-            <strong>{service.title}</strong>
-            <p>{service.description}</p>
-            <span className="marketing-service-link">
-              Explore Offers <span aria-hidden="true">→</span>
-            </span>
-          </motion.a>
-        ))}
+        {services.map((service) => {
+          const MotionTag = onSelect ? motion.button : motion.a;
+          const cardProps = onSelect
+            ? { type: "button", onClick: () => onSelect(products.find((product) => product.title === service.title)) }
+            : { href: "#login-card" };
+          return (
+            <MotionTag
+              className="marketing-service-card"
+              key={service.title}
+              variants={revealUp}
+              whileHover={{ y: -6 }}
+              {...cardProps}
+            >
+              <span className="marketing-service-icon">
+                <Illustration kind={service.art} />
+              </span>
+              <strong>{service.title}</strong>
+              <p>{service.description}</p>
+              <span className="marketing-service-link">
+                Explore Offers <span aria-hidden="true">→</span>
+              </span>
+            </MotionTag>
+          );
+        })}
       </motion.div>
     </section>
   );
