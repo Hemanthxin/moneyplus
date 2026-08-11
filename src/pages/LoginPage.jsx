@@ -3,10 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { registerUser, sendOtp, verifyOtp } from "../api/client";
 import { authCardVariants, fadeUpItem, floatBlob, showcaseStagger, stepVariants } from "../animations";
-import { Logo, LockIcon, MiniIcon } from "../components/icons";
-import MarketingNavbar from "../components/marketing/MarketingNavbar";
+import { LockIcon, MiniIcon } from "../components/icons";
 import LendingPartnersSection from "../components/marketing/LendingPartnersSection";
 import heroIllustrationImage from "../assets/ChatGPT Image Aug 10, 2026, 11_33_15 AM.png";
+import moneyPlusLogo from "../assets/moneyplus-logo-full.png";
 
 const onboardingSteps = [
   { key: "mobile", label: "Mobile" },
@@ -245,8 +245,6 @@ function LoginPage({ onAuthenticated }) {
 
   return (
     <div className="login-page-theme">
-      <MarketingNavbar />
-
       <div className="login-viewport">
       <main
         className="auth-shell"
@@ -279,7 +277,7 @@ function LoginPage({ onAuthenticated }) {
               animate="show"
             >
               <motion.div className="brand-block auth-brand" variants={fadeUpItem}>
-                <Logo />
+                <img className="brand-logo-image" src={moneyPlusLogo} alt="MoneyPlus - Grow Your Wealth" />
               </motion.div>
 
               <motion.div className="hero-eyebrow-row" variants={fadeUpItem}>
@@ -330,7 +328,7 @@ function LoginPage({ onAuthenticated }) {
             animate="show"
           >
             <div className="auth-card-header centered">
-              <Logo />
+              <img className="brand-logo-image compact" src={moneyPlusLogo} alt="MoneyPlus - Grow Your Wealth" />
               <p className="welcome-kicker">
                 {step === "mobile" ? "Welcome Back!" : "Associate Login"}
               </p>

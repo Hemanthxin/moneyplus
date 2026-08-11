@@ -128,6 +128,17 @@ a {
   font-size: 1.3rem;
 }
 
+.brand-logo-image {
+  display: block;
+  width: 168px;
+  height: auto;
+}
+
+.brand-logo-image.compact {
+  width: 132px;
+  margin: 0 auto;
+}
+
 .brand-logo {
   display: inline-flex;
   align-items: center;
@@ -871,7 +882,7 @@ input[type="number"] {
   width: 18px;
   height: 18px;
   border-radius: 999px;
-  background: #ff4734;
+  background: var(--brand);
   color: white;
   font-size: 0.72rem;
 }
@@ -885,7 +896,7 @@ input[type="number"] {
   padding: 0;
   display: grid;
   place-items: center;
-  filter: drop-shadow(0 6px 14px rgba(255, 90, 48, 0.35));
+  filter: drop-shadow(0 6px 14px rgba(22, 163, 74, 0.35));
 }
 
 .profile-avatar-button svg {

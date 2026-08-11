@@ -274,8 +274,8 @@ function ProfileAvatar() {
     <svg viewBox="0 0 44 44" fill="none" role="img" aria-label="Profile">
       <defs>
         <linearGradient id="avatarSphere" x1="10%" y1="0%" x2="90%" y2="100%">
-          <stop offset="0%" stopColor="#ff8a54" />
-          <stop offset="100%" stopColor="#ff4b2f" />
+          <stop offset="0%" style={{ stopColor: "var(--brand)" }} />
+          <stop offset="100%" style={{ stopColor: "var(--brand-deep)" }} />
         </linearGradient>
         <radialGradient id="avatarGloss" cx="35%" cy="28%" r="55%">
           <stop offset="0%" stopColor="rgba(255,255,255,0.85)" />

@@ -504,9 +504,6 @@ function DashboardPage({ session, onLogout }) {
                 <strong>Compare. Choose. Save.</strong>
                 <p>Get the best loan offers from top banks &amp; NBFCs</p>
               </div>
-              <div className="promo-art">
-                <Illustration kind="moneybag" />
-              </div>
             </motion.section>
 
             <ServicesSection products={data.products} onSelect={openProductPanel} />
