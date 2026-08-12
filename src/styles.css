@@ -910,10 +910,11 @@ input[type="number"] {
   display: none;
 }
 
-.dashboard-hero img {
+.dashboard-hero video {
   width: 100%;
   height: auto;
   display: block;
+  object-fit: cover;
 }
 
 @media (min-width: 981px) {
