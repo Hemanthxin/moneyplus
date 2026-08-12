@@ -10,7 +10,7 @@ import TestimonialsSection from "../components/marketing/TestimonialsSection";
 import FaqSection from "../components/marketing/FaqSection";
 import CtaBanner from "../components/marketing/CtaBanner";
 import MarketingFooter from "../components/marketing/MarketingFooter";
-import dashboardHeroVideo from "../assets/Hero.mp4";
+import dashboardHeroVideo from "../assets/generate_d_video_for_moneypl (online-video-cutter.com).mp4";
 import eligibilityResultBg from "../assets/Screenshot 2026-08-06 175043.png";
 import emiResultBg from "../assets/Screenshot 2026-08-06 175049.png";
 import ServicesSection from "../components/marketing/ServicesSection";
