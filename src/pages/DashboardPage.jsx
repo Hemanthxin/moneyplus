@@ -136,28 +136,43 @@ function DashboardPage({ session, onLogout }) {
   }, [activePanel, data]);
 
   function scrollToSection(id) {
+    // The mobile menu's exit animation (height 492px -> 0 over 250ms) shifts every
+    // section below it upward while it collapses. Calling scrollIntoView() before
+    // that finishes races the collapse: the browser's smooth-scroll targets a
+    // position computed from the still-open layout, and the two motions cancel
+    // each other out, leaving the page looking like the click did nothing.
+    const wasMenuOpen = menuOpen;
     setMenuOpen(false);
     setActiveSection(id);
     pendingSectionRef.current = id;
-    if (activePanel !== "home") {
-      setActivePanel("home");
-      // AnimatePresence (mode="wait") keeps the outgoing detail panel mounted
-      // until its exit transition finishes, so the home sections aren't in
-      // the DOM yet on the next tick. Poll briefly until the target appears.
-      let attempts = 0;
-      const tryScroll = () => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else if (attempts < 20) {
-          attempts += 1;
-          setTimeout(tryScroll, 30);
-        }
-      };
-      setTimeout(tryScroll, 30);
-      return;
+
+    const runScroll = () => {
+      if (activePanel !== "home") {
+        setActivePanel("home");
+        // AnimatePresence (mode="wait") keeps the outgoing detail panel mounted
+        // until its exit transition finishes, so the home sections aren't in
+        // the DOM yet on the next tick. Poll briefly until the target appears.
+        let attempts = 0;
+        const tryScroll = () => {
+          const element = document.getElementById(id);
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          } else if (attempts < 20) {
+            attempts += 1;
+            setTimeout(tryScroll, 30);
+          }
+        };
+        setTimeout(tryScroll, 30);
+        return;
+      }
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    if (wasMenuOpen) {
+      setTimeout(runScroll, 280);
+    } else {
+      runScroll();
     }
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   const applicationsKey = `moneyplus-applications-${session.mobile}`;
