@@ -2117,16 +2117,11 @@ input[type="number"] {
   }
 
   .auth-brand {
-    display: flex;
-    justify-content: center;
-  }
-
-  .auth-brand .brand-logo-image {
-    width: 120px;
+    display: none;
   }
 
   .hero-copy {
-    margin-top: 10px;
+    margin-top: 0;
     padding: 0 4px;
   }
 
