@@ -9,7 +9,6 @@ import healthInsuranceImg from "../../assets/product-health-insurance.png";
 import termInsuranceImg from "../../assets/product-term-insurance.png";
 import fdCreditCardImg from "../../assets/product-fd-credit-card.png";
 import goldLoanImg from "../../assets/product-gold-loan.png";
-import fdRdImg from "../../assets/product-fd-rd.png";
 
 const productImageMap = {
   "Personal Loan": personalLoanImg,
@@ -20,7 +19,6 @@ const productImageMap = {
   "Term Insurance": termInsuranceImg,
   "FD Credit Card": fdCreditCardImg,
   "Gold Loan": goldLoanImg,
-  "FD / RD": fdRdImg,
 };
 
 const staticServices = [
@@ -32,7 +30,6 @@ const staticServices = [
   { title: "Term Insurance", description: "Life cover for your family's security" },
   { title: "FD Credit Card", description: "Build credit with FD backed card" },
   { title: "Gold Loan", description: "Get instant loan against your gold" },
-  { title: "FD / RD", description: "Save today for a better tomorrow" },
 ];
 
 function ServicesSection({ products, onSelect }) {

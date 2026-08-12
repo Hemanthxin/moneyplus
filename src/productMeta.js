@@ -23,7 +23,6 @@ export const productArtMap = {
   "Term Insurance": "shield",
   "FD Credit Card": "card",
   "Gold Loan": "gold",
-  "FD / RD": "piggy",
 };
 
 export const productAccentMap = {
@@ -35,7 +34,6 @@ export const productAccentMap = {
   "Term Insurance": "accent-green",
   "FD Credit Card": "accent-indigo",
   "Gold Loan": "accent-gold",
-  "FD / RD": "accent-pink",
 };
 
 export const productOrbitOrder = [
@@ -46,7 +44,6 @@ export const productOrbitOrder = [
   "Term Insurance",
   "FD Credit Card",
   "Gold Loan",
-  "FD / RD",
 ];
 
 export function findRateFeature(features) {
