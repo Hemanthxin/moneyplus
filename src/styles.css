@@ -113,6 +113,10 @@ a {
   max-width: 480px;
 }
 
+.auth-showcase-video {
+  display: none;
+}
+
 .auth-brand,
 .hero-copy,
 .feature-row {
@@ -2095,53 +2099,27 @@ input[type="number"] {
   }
 
   .auth-showcase {
-    flex: 1;
+    flex: none;
     width: 100%;
     max-width: none;
     margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: clamp(28px, 8vh, 56px) 20px 24px;
+    padding: 20px 20px 0;
+  }
+
+  .auth-showcase-video {
+    display: block;
+    width: 100%;
+    max-width: 340px;
+    aspect-ratio: 1024 / 668;
+    border-radius: 24px;
+    object-fit: cover;
+    box-shadow: 0 20px 45px rgba(15, 122, 56, 0.18);
   }
 
   .showcase-panel {
-    display: block;
-    max-width: none;
-    width: 100%;
-    padding: 0;
-    background: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: none;
-    border-radius: 0;
-  }
-
-  .auth-brand {
-    display: none;
-  }
-
-  .hero-copy {
-    margin-top: 0;
-    padding: 0 4px;
-  }
-
-  .hero-copy h1 {
-    max-width: none;
-    font-size: clamp(1.35rem, 5vw, 1.7rem);
-    line-height: 1.15;
-    text-shadow: 0 2px 14px rgba(255, 255, 255, 0.55);
-  }
-
-  .hero-rule {
-    margin: 10px auto 8px;
-  }
-
-  .hero-copy p {
-    font-size: 0.86rem;
-  }
-
-  .feature-row {
     display: none;
   }
 

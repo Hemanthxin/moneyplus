@@ -6,6 +6,7 @@ import { authCardVariants, fadeUpItem, floatBlob, showcaseStagger, stepVariants 
 import { Logo, LockIcon, MiniIcon } from "../components/icons";
 import LendingPartnersSection from "../components/marketing/LendingPartnersSection";
 import heroIllustrationImage from "../assets/ChatGPT Image Aug 10, 2026, 11_33_15 AM.png";
+import heroVideo from "../assets/Hero.mp4";
 
 const onboardingSteps = [
   { key: "mobile", label: "Mobile" },
@@ -266,6 +267,15 @@ function LoginPage({ onAuthenticated }) {
         />
         <section className="auth-stage">
           <div className="auth-showcase">
+            <video
+              className="auth-showcase-video"
+              src={heroVideo}
+              autoPlay
+              muted
+              loop
+              playsInline
+              aria-hidden="true"
+            />
             <motion.div
               className="showcase-panel"
               variants={showcaseStagger}
