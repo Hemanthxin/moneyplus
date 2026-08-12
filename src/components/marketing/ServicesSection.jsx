@@ -1,19 +1,38 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { revealStagger, revealUp, revealViewport } from "../../animations";
-import { Illustration } from "../icons";
-import { productArtMap } from "../../productMeta";
+import personalLoanImg from "../../assets/product-personal-loan.png";
+import businessLoanImg from "../../assets/product-business-loan.png";
+import homeLoanImg from "../../assets/product-home-loan.png";
+import carLoanImg from "../../assets/product-car-loan.png";
+import healthInsuranceImg from "../../assets/product-health-insurance.png";
+import termInsuranceImg from "../../assets/product-term-insurance.png";
+import fdCreditCardImg from "../../assets/product-fd-credit-card.png";
+import goldLoanImg from "../../assets/product-gold-loan.png";
+import fdRdImg from "../../assets/product-fd-rd.png";
+
+const productImageMap = {
+  "Personal Loan": personalLoanImg,
+  "Business Loan": businessLoanImg,
+  "Home Loan": homeLoanImg,
+  "Car Loan": carLoanImg,
+  "Health Insurance": healthInsuranceImg,
+  "Term Insurance": termInsuranceImg,
+  "FD Credit Card": fdCreditCardImg,
+  "Gold Loan": goldLoanImg,
+  "FD / RD": fdRdImg,
+};
 
 const staticServices = [
-  { title: "Personal Loan", art: "moneybag", description: "Instant funds for any need, rates starting 10.5% p.a." },
-  { title: "Business Loan", art: "business", description: "Fuel your growth with collateral-free business funding." },
-  { title: "Home Loan", art: "home", description: "Own your dream home with rates starting 8.5% p.a." },
-  { title: "Car Loan", art: "car", description: "Drive home your new car with up to 100% on-road funding." },
-  { title: "Health Insurance", art: "health", description: "Cashless coverage for you and your family, hassle-free." },
-  { title: "Term Insurance", art: "shield", description: "Secure your family's future with affordable life cover." },
-  { title: "FD Credit Card", art: "card", description: "Build credit history with a card secured by your FD." },
-  { title: "Gold Loan", art: "gold", description: "Unlock instant liquidity against your gold, low interest." },
-  { title: "FD / RD", art: "piggy", description: "Grow your savings safely with guaranteed returns." },
+  { title: "Personal Loan", description: "Quick funds for your personal needs" },
+  { title: "Business Loan", description: "Grow your business with ease" },
+  { title: "Home Loan", description: "Fulfill your dream of owning a home" },
+  { title: "Car Loan", description: "Drive your dream car today" },
+  { title: "Health Insurance", description: "Secure your health, secure your future" },
+  { title: "Term Insurance", description: "Life cover for your family's security" },
+  { title: "FD Credit Card", description: "Build credit with FD backed card" },
+  { title: "Gold Loan", description: "Get instant loan against your gold" },
+  { title: "FD / RD", description: "Save today for a better tomorrow" },
 ];
 
 function ServicesSection({ products, onSelect }) {
@@ -21,7 +40,6 @@ function ServicesSection({ products, onSelect }) {
     products && products.length
       ? products.map((product) => ({
           title: product.title,
-          art: productArtMap[product.title] || "moneybag",
           description: product.subtitle,
         }))
       : staticServices;
@@ -52,11 +70,9 @@ function ServicesSection({ products, onSelect }) {
               key={service.title}
               variants={revealUp}
               whileHover={{ y: -6 }}
+              style={{ backgroundImage: `url(${productImageMap[service.title] || personalLoanImg})` }}
               {...cardProps}
             >
-              <span className="marketing-service-icon">
-                <Illustration kind={service.art} />
-              </span>
               <strong>{service.title}</strong>
               <p>{service.description}</p>
               <span className="marketing-service-link">

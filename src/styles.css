@@ -748,6 +748,7 @@ input[type="number"] {
   display: flex;
   align-items: center;
   gap: 12px;
+  grid-column: -1;
   justify-self: end;
 }
 
